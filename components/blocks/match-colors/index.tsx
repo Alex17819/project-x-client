@@ -27,8 +27,12 @@ export const MatchColors = () => {
 
   const colorRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const imageRefs = useRef<Record<string, HTMLLIElement | null>>({});
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (!containerRef.current) return;
+    const containerRect = containerRef.current.getBoundingClientRect();
+
     const newLines = Object.entries(matches).map(([color, image]) => {
       const colorEl = colorRefs.current[color];
       const imageEl = imageRefs.current[image];
@@ -39,10 +43,10 @@ export const MatchColors = () => {
 
         return {
           color,
-          x1: colorRect.right + window.scrollX,
-          y1: colorRect.top + colorRect.height / 2 + window.scrollY,
-          x2: imageRect.left + window.scrollX,
-          y2: imageRect.top + imageRect.height / 2 + window.scrollY,
+          x1: colorRect.right - containerRect.left,
+          y1: colorRect.top + colorRect.height / 2 - containerRect.top,
+          x2: imageRect.left - containerRect.left,
+          y2: imageRect.top + imageRect.height / 2 - containerRect.top,
         };
       }
       return null;
@@ -77,7 +81,7 @@ export const MatchColors = () => {
   };
 
   return (
-    <div className="flex gap-x-[250px] relative">
+    <div ref={containerRef} className="flex gap-x-[250px] relative">
       <svg className="absolute size-full top-0 left-0 pointer-events-none">
         {lines.map((line, index) => (
           <line

@@ -21,11 +21,14 @@ export const NumberNeighbor = () => {
     setState((prevState) => {
       return prevState.map((row, indexRow) => {
         if (rowIndex === indexRow) {
+          if (value.length > 1) {
+            return row;
+          }
           if (inputIndex === 0) {
-            return [Number(value), row[1], row[2]];
+            return [value === "" ? null : Number(value), row[1], row[2]];
           }
           if (inputIndex === 2) {
-            return [row[0], row[1], Number(value)];
+            return [row[0], row[1], value === "" ? null : Number(value)];
           }
         }
 
