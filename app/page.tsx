@@ -2,6 +2,7 @@ import {
   NumberNeighbor,
   MatchColors,
   MatchQuantity,
+  GuessTheAnimal,
 } from "@/components/blocks";
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
       <MatchColors />
       <NumberNeighbor />
       <MatchQuantity />
+      <GuessTheAnimal />
     </div>
   );
 }

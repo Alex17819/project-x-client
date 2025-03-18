@@ -57,6 +57,7 @@ export const NumberNeighbor = () => {
                   />
                   <div className="absolute top-[50%] left-[50%] -translate-[50%] size-7 bg-yellow-400 rounded-full shadow-[0_0_20px_#fdc700]" />
                   <input
+                    type="text"
                     className="relative text-red-500 text-[24px] size-15 text-center outline-none z-2"
                     value={number ?? ""}
                     onChange={(e) =>
