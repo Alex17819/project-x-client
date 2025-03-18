@@ -1,11 +1,10 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import {MatchColors} from "@/components/blocks/match-colors";
+import { NumberNeighbor, MatchColors } from "@/components/blocks";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
+    <div>
       <MatchColors />
+      <NumberNeighbor />
     </div>
   );
 }

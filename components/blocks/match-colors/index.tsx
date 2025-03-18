@@ -1,21 +1,24 @@
 "use client";
 
-import React, {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-const colors = ["red", "blue", "green", "yellow"]
-const images = ["strawberry.jpg", "frog.jpg", "chicken.jpg", "whale.jpg"]
+const colors = ["red", "blue", "green", "yellow"];
+const images = ["strawberry.jpg", "frog.jpg", "chicken.jpg", "whale.jpg"];
 
 interface Line {
   x1: number;
   y1: number;
   x2: number;
-  y2: number,
+  y2: number;
   color: string;
 }
 
 export const MatchColors = () => {
-  const [selected, setSelected] = useState<{ color: string | null; image: string | null }>({
+  const [selected, setSelected] = useState<{
+    color: string | null;
+    image: string | null;
+  }>({
     color: null,
     image: null,
   });
@@ -50,10 +53,13 @@ export const MatchColors = () => {
 
   const handleChoose = (type: "color" | "image", value: string) => {
     setSelected((prev) => {
-      const newSelected = {...prev, [type]: prev[type] === value ? null : value};
+      const newSelected = {
+        ...prev,
+        [type]: prev[type] === value ? null : value,
+      };
       if (newSelected.color && newSelected.image) {
         setMatches((prevMatches) => {
-          const updatedMatches = {...prevMatches};
+          const updatedMatches = { ...prevMatches };
 
           Object.entries(prevMatches).forEach(([color, image]) => {
             if (color === newSelected.color || image === newSelected.image) {
@@ -64,11 +70,11 @@ export const MatchColors = () => {
           updatedMatches[newSelected.color!] = newSelected.image!;
           return updatedMatches;
         });
-        return {color: null, image: null};
+        return { color: null, image: null };
       }
       return newSelected;
     });
-  }
+  };
 
   return (
     <div className="flex gap-x-[250px] relative">
@@ -87,37 +93,45 @@ export const MatchColors = () => {
       </svg>
       <ul className="flex flex-col gap-y-4">
         {colors.map((color, index) => {
-            const isMatched = matches[color] || Object.values(matches).includes(color);
+          const isMatched =
+            matches[color] || Object.values(matches).includes(color);
 
-            return (
-              <li
-                className="cursor-pointer size-20 rounded-full"
-                ref={ref => {
-                  if (ref) {
-                    colorRefs.current[color] = ref;
-                  }
-                }}
-                key={index}
-                style={{
-                  backgroundColor: color,
-                  outline: selected.color === color ? "2px solid black" : isMatched ? `2px solid ${color}` : "",
-                }}
-                onClick={() => handleChoose("color", color)}
-              />
-            )
-          }
-        )}
+          return (
+            <li
+              className="cursor-pointer size-20 rounded-full"
+              ref={(ref) => {
+                if (ref) {
+                  colorRefs.current[color] = ref;
+                }
+              }}
+              key={index}
+              style={{
+                backgroundColor: color,
+                outline:
+                  selected.color === color
+                    ? "2px solid black"
+                    : isMatched
+                      ? `2px solid ${color}`
+                      : "",
+              }}
+              onClick={() => handleChoose("color", color)}
+            />
+          );
+        })}
       </ul>
       <ul className="flex flex-col gap-y-4">
         {images.map((image, index) => {
-          const isMatched = matches[image] || Object.values(matches).includes(image);
-          const color = Object.entries(matches).find(([, value]) => value === image);
+          const isMatched =
+            matches[image] || Object.values(matches).includes(image);
+          const color = Object.entries(matches).find(
+            ([, value]) => value === image
+          );
 
           return (
             <li
               className="cursor-pointer size-20 rounded-full"
               key={index}
-              ref={ref => {
+              ref={(ref) => {
                 if (ref) {
                   imageRefs.current[image] = ref;
                 }
@@ -130,12 +144,17 @@ export const MatchColors = () => {
                 height="80"
                 onClick={() => handleChoose("image", image)}
                 style={{
-                  outline: selected.image === image ? "2px solid black" : isMatched ? `2px solid ${color?.[0]}` : "",
-                  borderRadius: "100%"
+                  outline:
+                    selected.image === image
+                      ? "2px solid black"
+                      : isMatched
+                        ? `2px solid ${color?.[0]}`
+                        : "",
+                  borderRadius: "100%",
                 }}
               />
             </li>
-          )
+          );
         })}
       </ul>
     </div>
