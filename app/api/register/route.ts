@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     secure: false,
     sameSite: "strict",
     path: "/",
-    maxAge: 60 * 15, // 15m
+    maxAge: 60 * 60 * 24, // 15m
   });
 
   (await cookies()).set("refresh_token", data.refreshToken, {
