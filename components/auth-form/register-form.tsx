@@ -5,7 +5,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerFormSchema } from "@/actions/auth/schema";
-import { AuthApi } from "@/api/auth";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -13,6 +12,7 @@ type Inputs = {
   email: string;
   password: string;
   passwordConfirmation: string;
+  isTeacher: boolean;
 };
 
 export const RegisterForm = ({
@@ -25,11 +25,14 @@ export const RegisterForm = ({
     register: registerInput,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<Inputs>({
     resolver: zodResolver(registerFormSchema),
   });
   const [isLoading, setIsLoading] = useState(false);
+  const isTeacher = watch("isTeacher", false);
+
   const onSubmit: SubmitHandler<Inputs> = async (data, event) => {
     event?.preventDefault();
     setIsLoading(true);
@@ -39,6 +42,7 @@ export const RegisterForm = ({
       body: JSON.stringify({
         email: data.email,
         password: data.password,
+        role: isTeacher ? "TEACHER" : "USER",
       }),
       credentials: "include",
     });
@@ -94,6 +98,17 @@ export const RegisterForm = ({
             {errors.passwordConfirmation?.message}
           </span>
         )}
+        <div className="flex gap-x-2 items-center">
+          <label htmlFor="isTeacher" className="flex gap-x-2">
+            <input
+              type="checkbox"
+              {...registerInput("isTeacher")}
+              name="isTeacher"
+              id="isTeacher"
+            />
+            Create account as teacher
+          </label>
+        </div>
         <button
           type="submit"
           className="cursor-pointer border px-2"

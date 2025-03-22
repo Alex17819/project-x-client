@@ -2,14 +2,14 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
-  const { email, password } = await req.json();
+  const { email, password, role } = await req.json();
 
   const backendRes = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL!}/auth/register`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, role }),
     }
   );
 

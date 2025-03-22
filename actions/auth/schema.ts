@@ -11,6 +11,7 @@ export const registerFormSchema = z
       .regex(/[0-9]/, { message: "Contain at least one number." })
       .trim(),
     passwordConfirmation: z.string(),
+    isTeacher: z.boolean(),
   })
   .superRefine(({ password, passwordConfirmation }, ctx) => {
     console.log(password, passwordConfirmation);
