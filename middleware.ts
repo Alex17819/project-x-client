@@ -5,9 +5,9 @@ export function middleware(req: NextRequest) {
   const accessToken = req.cookies.get("access_token")?.value;
   const refreshToken = req.cookies.get("refresh_token")?.value;
 
-  if (!accessToken || !refreshToken) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
+  // if (!accessToken || !refreshToken) {
+  //   return NextResponse.redirect(new URL("/", req.url));
+  // }
 
   return NextResponse.next();
 }

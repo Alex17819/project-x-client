@@ -63,8 +63,6 @@ export const ImageGeneration = () => {
     setImages(res.data);
   };
 
-  console.log(images);
-
   return (
     <div className="flex flex-col items-center gap-y-2">
       <div>

@@ -1,40 +1,20 @@
-import { cookies } from "next/headers";
+"use client";
 
-export default async function DashboardPage() {
-  const res = await fetch(`http://localhost:3000/api/dashboard`, {
-    method: "GET",
-    credentials: "include",
-  });
-  const dashboard = await res.json();
+import { api } from "@/api/axios";
+import { useEffect } from "react";
 
-  // if (dashboard.statusCode === 401) {
-  //   const myCookies = await cookies();
-  //   console.log("COOKIE", typeof myCookies.get("refresh_token")?.value);
-  //
-  //   const res = await fetch(
-  //     `${process.env.NEXT_PUBLIC_API_URL!}/auth/refresh/access-token`,
-  //     {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       credentials: "include",
-  //       body: JSON.stringify({
-  //         refreshToken: myCookies.get("refresh_token")?.value,
-  //       }),
-  //     }
-  //   );
-  //   const data = await res.json();
-  //
-  //   myCookies.set("access_token", data.access_token, {
-  //     httpOnly: true,
-  //     secure: false,
-  //     sameSite: "strict",
-  //     path: "/",
-  //     maxAge: 60 * 15, // 15m
-  //   });
-  //   console.log("data", data);
-  // }
+export default function DashboardPage() {
+  useEffect(() => {
+    const getSmth = async () => {
+      const res = await api.get("/auth/protected", {
+        withCredentials: true,
+      });
 
-  console.log("dashboard", dashboard);
+      console.log(res);
+    };
+
+    getSmth().catch((e) => console.log("PAGE ERROR", e));
+  }, []);
 
   return <h1>Protected route</h1>;
 }

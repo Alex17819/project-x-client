@@ -1,40 +1,44 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import setCookieParser from "set-cookie-parser";
 
 export async function POST(req: Request) {
   const { email, password, role } = await req.json();
 
-  const backendRes = await fetch(
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL!}/auth/register`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ email, password, role }),
     }
   );
 
-  const data = await backendRes.json();
-  if (!backendRes.ok) {
-    return NextResponse.json(data, { status: backendRes.status });
+  const data = await response.json();
+  if (!response.ok) {
+    return NextResponse.json(data, { status: response.status });
   }
 
-  console.log("data", data);
+  const setCookieHeader = response.headers.get("set-cookie");
+  const cookiesObj = await cookies();
 
-  (await cookies()).set("access_token", data.accessToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "strict",
-    path: "/",
-    maxAge: 60 * 60 * 24, // 15m
-  });
+  if (setCookieHeader) {
+    const splitString = setCookieParser.splitCookiesString(setCookieHeader);
 
-  (await cookies()).set("refresh_token", data.refreshToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "strict",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 7d
-  });
+    const parsedCookies = setCookieParser.parse(splitString);
+
+    parsedCookies.forEach(({ name, value, ...options }) => {
+      cookiesObj.set(name, value, {
+        httpOnly: options.httpOnly,
+        secure: options.secure,
+        path: options.path || "/",
+        maxAge: options.maxAge,
+        expires: options.expires ? new Date(options.expires) : undefined,
+        sameSite: options.sameSite as "strict" | "lax" | "none",
+      });
+    });
+  }
 
   return NextResponse.json({ message: "Registered" });
 }

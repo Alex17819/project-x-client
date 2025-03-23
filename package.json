@@ -19,6 +19,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
     "react-toastify": "^11.0.5",
+    "set-cookie-parser": "^2.7.1",
     "tailwindcss": "^4.0.14",
     "zod": "^3.24.2"
   },
@@ -27,6 +28,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/set-cookie-parser": "^2.4.10",
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
     "prettier": "3.5.3",

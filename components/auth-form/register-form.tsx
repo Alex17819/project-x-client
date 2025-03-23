@@ -51,6 +51,7 @@ export const RegisterForm = ({
     if (!res.ok) {
       toast.error(body.message);
       reset();
+      return;
     }
     toast.success(body.message);
     router.push("/dashboard");
@@ -111,7 +112,7 @@ export const RegisterForm = ({
         </div>
         <button
           type="submit"
-          className="cursor-pointer border px-2"
+          className="cursor-pointer border px-2 disabled:bg-gray-300"
           disabled={isLoading}
         >
           Register

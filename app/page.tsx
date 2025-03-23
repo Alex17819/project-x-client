@@ -17,8 +17,8 @@ export default function Home() {
       {/*<MatchQuantity />*/}
       {/*<GuessTheAnimal />*/}
       {/*<MemoryCards />*/}
-      <ImageGeneration />
-      {/*<AuthForm />*/}
+      {/*<ImageGeneration />*/}
+      <AuthForm />
     </div>
   );
 }
