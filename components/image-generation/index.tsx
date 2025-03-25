@@ -100,37 +100,39 @@ export const ImageGeneration = () => {
       >
         Generate
       </button>
-      <div className="relative w-[500px] min-h-[500px] h-full flex justify-center items-center">
-        {isLoading ? (
-          <div className="absolute top-0 left-0 size-full flex justify-center items-center bg-gray-500">
-            <div className={styles.loader} />
-          </div>
-        ) : null}
-        {url ? (
-          <div className="flex flex-col gap-y-2 size-full">
-            <Image
-              src={`data:image/png;base64,${url}`}
-              alt="img"
-              width={500}
-              height={500}
-            />
-            <button
-              className="border cursor-pointer p-2 disabled:bg-gray-300 hover:bg-gray-300 transition-colors disabled:cursor-not-allowed"
-              disabled={!filename || isImageUploading}
-              onClick={!filename || isImageUploading ? () => {} : uploadImage}
-            >
-              Save image
-            </button>
-            <input
-              className="p-2 outline-none border hover:bg-gray-300 transition-colors"
-              type="text"
-              placeholder="Enter filename..."
-              value={filename}
-              onChange={(e) => setFilename(e.target.value)}
-            />
-          </div>
-        ) : null}
-      </div>
+      {isLoading || url ? (
+        <div className="relative w-[500px] min-h-[500px] size-full flex justify-center items-center">
+          {isLoading ? (
+            <div className="absolute top-0 left-0 size-full flex justify-center items-center bg-gray-500">
+              <div className={styles.loader} />
+            </div>
+          ) : null}
+          {url ? (
+            <div className="flex flex-col gap-y-2 size-full">
+              <Image
+                src={`data:image/png;base64,${url}`}
+                alt="img"
+                width={500}
+                height={500}
+              />
+              <button
+                className="border cursor-pointer p-2 disabled:bg-gray-300 hover:bg-gray-300 transition-colors disabled:cursor-not-allowed"
+                disabled={!filename || isImageUploading}
+                onClick={!filename || isImageUploading ? () => {} : uploadImage}
+              >
+                Save image
+              </button>
+              <input
+                className="p-2 outline-none border hover:bg-gray-300 transition-colors"
+                type="text"
+                placeholder="Enter filename..."
+                value={filename}
+                onChange={(e) => setFilename(e.target.value)}
+              />
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 };
