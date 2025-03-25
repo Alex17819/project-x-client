@@ -34,7 +34,7 @@ export const LoginForm = ({
     const res = await AuthApi.login(data);
     setIsLoading(false);
     if (res.status >= 400 && res.status < 500) {
-      toast.error(res.response.data.message);
+      toast.error(res.data.message);
       reset();
       return;
     }
