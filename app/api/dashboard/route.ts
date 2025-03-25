@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 //TODO: find a way to get a cookie in this file
 export async function GET(req: NextRequest) {
@@ -15,7 +14,7 @@ export async function GET(req: NextRequest) {
   const data = await backendRes.json();
 
   if (data.statusCode === 401) {
-    const res = await fetch(
+    await fetch(
       `${process.env.NEXT_PUBLIC_API_URL!}/auth/refresh/access-token`,
       {
         method: "POST",
@@ -24,7 +23,6 @@ export async function GET(req: NextRequest) {
         body: JSON.stringify({ refreshToken }),
       }
     );
-    const data = await res.json();
 
     const backendRes = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL!}/auth/protected`

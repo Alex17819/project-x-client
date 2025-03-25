@@ -51,6 +51,7 @@ export const ImageGeneration = () => {
       });
 
       toast.success("Image uploaded successfully.");
+      /* eslint-disable @typescript-eslint/no-explicit-any */
     } catch (e: any) {
       console.log(e);
       toast.error(e.response.data.message);
