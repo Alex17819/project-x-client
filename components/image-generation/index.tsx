@@ -1,11 +1,12 @@
 "use client";
 
 import { ChangeEvent, useState } from "react";
+import { toast } from "react-toastify";
 import axios from "axios";
 import Image from "next/image";
+
 import styles from "./index.module.css";
 import { FilesApi } from "@/api/files";
-import { toast } from "react-toastify";
 
 export const ImageGeneration = () => {
   const [url, setUrl] = useState("");
@@ -65,8 +66,11 @@ export const ImageGeneration = () => {
 
   return (
     <div className="flex flex-col items-center gap-y-2">
-      <div>
-        <button className="p-2 border cursor-pointer" onClick={getImages}>
+      <div className="flex flex-col items-center gap-y-2">
+        <button
+          className="p-2 border cursor-pointer w-[200px] hover:bg-black hover:text-white transition-colors"
+          onClick={getImages}
+        >
           Fetch existing images
         </button>
         <div className="flex flex-wrap items-center gap-2">
@@ -96,7 +100,7 @@ export const ImageGeneration = () => {
       >
         Generate
       </button>
-      <div className="relative w-[500px] h-[500px] flex justify-center items-center">
+      <div className="relative w-[500px] h-full flex justify-center items-center">
         {isLoading ? (
           <div className="absolute top-0 left-0 size-full flex justify-center items-center bg-gray-500">
             <div className={styles.loader} />

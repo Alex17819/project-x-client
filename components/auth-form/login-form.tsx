@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema } from "@/actions/auth/schema";
 import { AuthApi } from "@/api/auth";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   email: string;
@@ -25,6 +26,7 @@ export const LoginForm = ({
   } = useForm<Inputs>({
     resolver: zodResolver(loginFormSchema),
   });
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit: SubmitHandler<Inputs> = async (data, event) => {
     event?.preventDefault();
@@ -34,7 +36,9 @@ export const LoginForm = ({
     if (res.status >= 400 && res.status < 500) {
       toast.error(res.response.data.message);
       reset();
+      return;
     }
+    router.push("/dashboard");
   };
 
   return (
