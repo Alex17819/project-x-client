@@ -70,7 +70,7 @@ export const RegisterForm = ({
           name="email"
           id="email"
           placeholder="Email"
-          className="border outline-none"
+          className="border outline-none px-2"
         />
         {errors?.email && (
           <span className="text-red-500">{errors.email?.message}</span>
@@ -82,7 +82,7 @@ export const RegisterForm = ({
           name="password"
           id="password"
           placeholder="Password"
-          className="border outline-none"
+          className="border outline-none px-2"
         />
         {errors?.password && (
           <span className="text-red-500">{errors.password?.message}</span>
@@ -92,7 +92,7 @@ export const RegisterForm = ({
           {...registerInput("passwordConfirmation", { required: true })}
           type="text"
           placeholder="Password confirmation"
-          className="border outline-none"
+          className="border outline-none px-2"
         />
         {errors?.passwordConfirmation && (
           <span className="text-red-500">
@@ -100,7 +100,7 @@ export const RegisterForm = ({
           </span>
         )}
         <div className="flex gap-x-2 items-center">
-          <label htmlFor="isTeacher" className="flex gap-x-2">
+          <label htmlFor="isTeacher" className="flex gap-x-2 cursor-pointer">
             <input
               type="checkbox"
               {...registerInput("isTeacher")}
@@ -112,7 +112,7 @@ export const RegisterForm = ({
         </div>
         <button
           type="submit"
-          className="cursor-pointer border px-2 disabled:bg-gray-300"
+          className="cursor-pointer border px-2 disabled:bg-gray-300 hover:bg-black hover:text-white transition-colors"
           disabled={isLoading}
         >
           Register
@@ -121,7 +121,7 @@ export const RegisterForm = ({
       <span>
         Already have an account?{" "}
         <span
-          className="text-blue-500 cursor-pointer"
+          className="text-blue-500 cursor-pointer hover:text-blue-700"
           onClick={() => setAuthType("login")}
         >
           Login&nbsp;

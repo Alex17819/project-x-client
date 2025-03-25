@@ -87,14 +87,14 @@ export const ImageGeneration = () => {
       </div>
       <textarea
         placeholder="Enter your prompt..."
-        className="border size-50 outline-none"
+        className="border size-50 outline-none p-2"
         name="ai-prompt"
         id="ai-prompt"
         onChange={handleChange}
         value={value}
       />
       <button
-        className="border cursor-pointer"
+        className="border cursor-pointer p-1 hover:bg-black hover:text-white transition-colors"
         type="button"
         onClick={onSubmit}
       >
