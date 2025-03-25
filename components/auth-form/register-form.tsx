@@ -36,7 +36,7 @@ export const RegisterForm = ({
   const onSubmit: SubmitHandler<Inputs> = async (data, event) => {
     event?.preventDefault();
     setIsLoading(true);
-    const res = await fetch("/api/register", {
+    const res = await fetch("api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
