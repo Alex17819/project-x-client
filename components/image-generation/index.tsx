@@ -100,7 +100,7 @@ export const ImageGeneration = () => {
       >
         Generate
       </button>
-      <div className="relative w-[500px] h-full flex justify-center items-center">
+      <div className="relative w-[500px] min-h-[500px] h-full flex justify-center items-center">
         {isLoading ? (
           <div className="absolute top-0 left-0 size-full flex justify-center items-center bg-gray-500">
             <div className={styles.loader} />
