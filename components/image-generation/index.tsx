@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import Image from "next/image";
 
-import styles from "./index.module.css";
 import { FilesApi } from "@/api/files";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export const ImageGeneration = () => {
   const [url, setUrl] = useState("");
@@ -53,7 +54,7 @@ export const ImageGeneration = () => {
       toast.success("Image uploaded successfully.");
       /* eslint-disable @typescript-eslint/no-explicit-any */
     } catch (e: any) {
-      console.log(e);
+      console.error(e);
       toast.error(e.response.data.message);
     } finally {
       setIsImageUploading(false);
@@ -62,18 +63,21 @@ export const ImageGeneration = () => {
 
   const getImages = async () => {
     const res = await FilesApi.getFiles();
+
+    if (res.data.length === 0) {
+      toast.error("No images found");
+      return;
+    }
+
     setImages(res.data);
   };
 
   return (
     <div className="flex flex-col items-center gap-y-2">
       <div className="flex flex-col items-center gap-y-2">
-        <button
-          className="p-2 border cursor-pointer w-[200px] hover:bg-black hover:text-white transition-colors"
-          onClick={getImages}
-        >
+        <Button className="w-[200px]" onClick={getImages}>
           Fetch existing images
-        </button>
+        </Button>
         <div className="flex flex-wrap items-center gap-2">
           {images.map((item, index) => (
             <Image
@@ -94,18 +98,14 @@ export const ImageGeneration = () => {
         onChange={handleChange}
         value={value}
       />
-      <button
-        className="border cursor-pointer p-1 hover:bg-black hover:text-white transition-colors"
-        type="button"
-        onClick={onSubmit}
-      >
+      <Button type="button" onClick={onSubmit} disabled={!value}>
         Generate
-      </button>
+      </Button>
       {isLoading || url ? (
         <div className="relative w-[500px] min-h-[500px] size-full flex justify-center items-center">
           {isLoading ? (
             <div className="absolute top-0 left-0 size-full flex justify-center items-center bg-gray-500">
-              <div className={styles.loader} />
+              <div className="loader" />
             </div>
           ) : null}
           {url ? (
@@ -116,15 +116,13 @@ export const ImageGeneration = () => {
                 width={500}
                 height={500}
               />
-              <button
-                className="border cursor-pointer p-2 disabled:bg-gray-300 hover:bg-gray-300 transition-colors disabled:cursor-not-allowed"
+              <Button
                 disabled={!filename || isImageUploading}
                 onClick={!filename || isImageUploading ? () => {} : uploadImage}
               >
                 Save image
-              </button>
-              <input
-                className="p-2 outline-none border hover:bg-gray-300 transition-colors"
+              </Button>
+              <Input
                 type="text"
                 placeholder="Enter filename..."
                 value={filename}

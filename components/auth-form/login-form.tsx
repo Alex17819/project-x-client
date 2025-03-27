@@ -1,23 +1,24 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginFormSchema } from "@/actions/auth/schema";
-import { AuthApi } from "@/api/auth";
-import { toast } from "react-toastify";
+import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-type Inputs = {
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
+
+import { AuthApi } from "@/api/auth";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { loginFormSchema } from "./schema";
+
+interface Inputs {
   email: string;
   password: string;
-};
+}
 
-export const LoginForm = ({
-  setAuthType,
-}: {
-  setAuthType: Dispatch<SetStateAction<"login" | "register">>;
-}) => {
+export const LoginForm = () => {
   const {
     register,
     handleSubmit,
@@ -33,7 +34,7 @@ export const LoginForm = ({
     setIsLoading(true);
     const res = await AuthApi.login(data);
     setIsLoading(false);
-    if (res.status >= 400 && res.status < 500) {
+    if (res.status >= 400) {
       toast.error(res.data.message);
       reset();
       return;
@@ -48,19 +49,18 @@ export const LoginForm = ({
         className="flex flex-col gap-y-2 justify-center items-center"
       >
         <label htmlFor="email">Email</label>
-        <input
+        <Input
           {...register("email", { required: true })}
           type="text"
           name="email"
           id="email"
           placeholder="Email"
-          className="border outline-none px-2"
         />
         {errors?.email && (
           <span className="text-red-500">{errors.email?.message}</span>
         )}
         <label htmlFor="password">Password</label>
-        <input
+        <Input
           {...register("password", { required: true })}
           type="password"
           name="password"
@@ -71,22 +71,18 @@ export const LoginForm = ({
         {errors?.password && (
           <span className="text-red-500">{errors.password?.message}</span>
         )}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="cursor-pointer border p-1 hover:bg-black hover:text-white transition-colors"
-        >
+        <Button type="submit" disabled={isLoading}>
           Login
-        </button>
+        </Button>
       </form>
       <span>
         Don&#39;t have an account?{" "}
-        <span
+        <Link
+          href="/register"
           className="text-blue-500 cursor-pointer hover:text-blue-700 transition-colors"
-          onClick={() => setAuthType("register")}
         >
           Register
-        </span>
+        </Link>
         &nbsp;now
       </span>
     </div>

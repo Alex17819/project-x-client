@@ -4,7 +4,11 @@ import { api } from "@/api/axios";
 import { API_ROUTES } from "@/api/routes";
 
 export class AuthApi {
-  static async register(body: { email: string; password: string }) {
+  static async register(body: {
+    email: string;
+    password: string;
+    role: "TEACHER" | "USER";
+  }) {
     try {
       return await api.post(API_ROUTES.register, body);
     } catch (err: any) {
@@ -16,7 +20,6 @@ export class AuthApi {
     try {
       return await api.post(API_ROUTES.login, body);
     } catch (err: any) {
-      console.log(err);
       return err.response || "Server error";
     }
   }

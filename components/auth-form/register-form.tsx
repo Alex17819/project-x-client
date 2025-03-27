@@ -1,12 +1,15 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerFormSchema } from "@/actions/auth/schema";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+
+import { AuthApi } from "@/api/auth";
+import { registerFormSchema } from "./schema";
 
 type Inputs = {
   email: string;
@@ -15,11 +18,7 @@ type Inputs = {
   isTeacher: boolean;
 };
 
-export const RegisterForm = ({
-  setAuthType,
-}: {
-  setAuthType: Dispatch<SetStateAction<"login" | "register">>;
-}) => {
+export const RegisterForm = () => {
   const router = useRouter();
   const {
     register: registerInput,
@@ -36,24 +35,18 @@ export const RegisterForm = ({
   const onSubmit: SubmitHandler<Inputs> = async (data, event) => {
     event?.preventDefault();
     setIsLoading(true);
-    const res = await fetch("api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-        role: isTeacher ? "TEACHER" : "USER",
-      }),
-      credentials: "include",
+    const res = await AuthApi.register({
+      email: data.email,
+      password: data.password,
+      role: isTeacher ? "TEACHER" : "USER",
     });
-    const body = await res.json();
     setIsLoading(false);
-    if (!res.ok) {
-      toast.error(body.message);
+    if (res.status !== 201) {
+      toast.error(res.data.message);
       reset();
       return;
     }
-    toast.success(body.message);
+    toast.success(res.data.message);
     router.push("/dashboard");
   };
 
@@ -78,7 +71,7 @@ export const RegisterForm = ({
         <label htmlFor="password">Password</label>
         <input
           {...registerInput("password", { required: true })}
-          type="text"
+          type="password"
           name="password"
           id="password"
           placeholder="Password"
@@ -90,7 +83,7 @@ export const RegisterForm = ({
         <label htmlFor="password-confirmation">Password confirmation</label>
         <input
           {...registerInput("passwordConfirmation", { required: true })}
-          type="text"
+          type="password"
           placeholder="Password confirmation"
           className="border outline-none px-2"
         />
@@ -120,12 +113,12 @@ export const RegisterForm = ({
       </form>
       <span>
         Already have an account?{" "}
-        <span
+        <Link
+          href="/login"
           className="text-blue-500 cursor-pointer hover:text-blue-700"
-          onClick={() => setAuthType("login")}
         >
           Login&nbsp;
-        </span>
+        </Link>
         now
       </span>
     </div>

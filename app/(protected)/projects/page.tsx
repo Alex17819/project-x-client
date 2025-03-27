@@ -1,7 +1,8 @@
 "use client";
 
-import { api } from "@/api/axios";
 import { useEffect } from "react";
+
+import { api } from "@/api/axios";
 
 export default function ProjectsPage() {
   useEffect(() => {

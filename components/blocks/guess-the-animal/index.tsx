@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef, useState, KeyboardEvent } from "react";
 
-const answer = "octopus";
+const answer = "caracatiță";
 
 export const GuessTheAnimal = () => {
   const [finalAnswer, setFinalAnswer] = useState<string[]>([]);

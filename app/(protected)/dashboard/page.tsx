@@ -1,7 +1,8 @@
 "use client";
 
-import { api } from "@/api/axios";
 import { useEffect, useState } from "react";
+
+import { api } from "@/api/axios";
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,6 +26,8 @@ export default function DashboardPage() {
       <div className="loader" />
     </div>
   ) : (
-    <h1>Protected route</h1>
+    <>
+      <h2>Protected route</h2>
+    </>
   );
 }

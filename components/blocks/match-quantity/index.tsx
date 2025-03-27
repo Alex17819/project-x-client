@@ -82,8 +82,6 @@ export const MatchQuantity = () => {
     });
   };
 
-  console.log(selected);
-
   return (
     <div ref={containerRef} className="relative flex gap-x-[250px]">
       <svg className="absolute size-full top-0 left-0 pointer-events-none">
