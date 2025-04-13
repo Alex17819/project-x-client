@@ -9,7 +9,7 @@ import { GalleryModal } from "./components/gallery";
 
 type ModalProps = {
   onClose: VoidFunction;
-  onClick?: (igm: string) => void;
+  onClick?: (img: string) => void;
 };
 
 const Modals: Record<string, FC<ModalProps>> = {
@@ -25,7 +25,7 @@ export const Modal = ({
   type: keyof typeof Modals;
   isOpen: boolean;
   onClose: VoidFunction;
-  onClick?: (igm: string) => void;
+  onClick?: (img: string) => void;
 }) => {
   useLockBodyScroll(isOpen);
 

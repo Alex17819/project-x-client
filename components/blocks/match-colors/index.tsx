@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { Modal } from "@/components/modals/modal";
+import { HexColorPicker } from "react-colorful";
+import { toast } from "react-toastify";
 
-const colors = ["red", "blue", "green", "yellow"];
-const images = ["strawberry.jpg", "frog.jpg", "chicken.jpg", "whale.jpg"];
+const roles = ["USER", "TEACHER"];
 
 interface Line {
   x1: number;
@@ -14,7 +16,16 @@ interface Line {
   color: string;
 }
 
+interface Columns {
+  colors: (string | null)[];
+  images: (string | null)[];
+}
+
 export const MatchColors = () => {
+  const [columns, setColumns] = useState<Columns>({
+    colors: [null],
+    images: [null],
+  });
   const [selected, setSelected] = useState<{
     color: string | null;
     image: string | null;
@@ -24,10 +35,28 @@ export const MatchColors = () => {
   });
   const [matches, setMatches] = useState<Record<string, string>>({});
   const [lines, setLines] = useState<Line[]>([]);
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+  const [img, setImg] = useState("");
+  const [colorPickerColor, setColorPickerColor] = useState("#aabbcc");
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+  const [colorPickerCoordinates, setColorPickerCoordinates] = useState<{
+    x: number;
+    y: number;
+  }>({
+    x: 0,
+    y: 0,
+  });
+  const [colorIndexToChange, setColorIndexToChange] = useState<number | null>(
+    null
+  );
+  const [imageIndexToChange, setImageIndexToChange] = useState<number | null>(
+    null
+  );
 
   const colorRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const imageRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const colorPickerLiRef = useRef<Record<string, HTMLLIElement | null>>({});
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -80,6 +109,122 @@ export const MatchColors = () => {
     });
   };
 
+  const addRow = () => {
+    setColumns((prevState) => ({
+      colors: [...prevState.colors, null],
+      images: [...prevState.images, null],
+    }));
+  };
+
+  const chooseColor = (
+    index: number,
+    color: string | undefined = undefined
+  ) => {
+    if (!roles.includes("TEACHER")) return;
+    if (color) setColorPickerColor(color);
+
+    setColorIndexToChange(index);
+    const element = colorPickerLiRef.current[index];
+    if (!element) return;
+
+    const rect = element.getBoundingClientRect();
+    setColorPickerCoordinates({
+      x: rect.left + window.scrollX,
+      y: rect.top + window.scrollY,
+    });
+    setIsColorPickerOpen(true);
+  };
+
+  const chooseImage = (index: number) => {
+    if (!roles.includes("TEACHER")) return;
+
+    setImageIndexToChange(index);
+    setIsGalleryModalOpen(true);
+  };
+
+  useEffect(() => {
+    if (columns.images.includes(img)) {
+      toast.error("Duplicated image");
+      return;
+    }
+
+    if (img === "") {
+      return;
+    }
+
+    const newImages = [...columns.images];
+    const newMatches = { ...matches };
+    if (imageIndexToChange || imageIndexToChange === 0) {
+      const key = Object.keys(newMatches).find(
+        (key) => newMatches[key] === newImages[imageIndexToChange]
+      );
+      if (key) {
+        delete newMatches[key];
+        newMatches[key] = img;
+      }
+      newImages[imageIndexToChange] = img;
+    }
+
+    setColumns((prevState) => ({
+      ...prevState,
+      images: newImages,
+    }));
+    setMatches(newMatches);
+    setImg("");
+    setImageIndexToChange(null);
+  }, [img, imageIndexToChange, columns.images]);
+
+  const deleteRow = (rowIndex: number) => {
+    if (columns.images.length === 1 || columns.colors.length === 1) return;
+
+    const newColumns = {
+      colors: [...columns.colors],
+      images: [...columns.images],
+    };
+
+    newColumns.colors = newColumns.colors.filter(
+      (_, index) => rowIndex !== index
+    );
+    newColumns.images = newColumns.images.filter(
+      (_, index) => rowIndex !== index
+    );
+
+    setColumns(newColumns);
+    const newMatches = {
+      ...matches,
+    };
+    Object.entries(newMatches).forEach(([key, value]) => {
+      if (
+        !newColumns.colors.includes(key) ||
+        !newColumns.images.includes(value)
+      ) {
+        delete newMatches[key];
+      }
+    });
+
+    setMatches(newMatches);
+  };
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (
+        !(e.target as HTMLElement).classList.contains(
+          "react-colorful__interactive"
+        ) &&
+        !(e.target as HTMLElement).classList.contains("react-colorful__pointer")
+      ) {
+        setIsColorPickerOpen(false);
+        setColorIndexToChange(null);
+      }
+    };
+
+    document.body.addEventListener("click", onClick);
+
+    return () => {
+      document.body.removeEventListener("click", onClick);
+    };
+  }, []);
+
   return (
     <div ref={containerRef} className="flex gap-x-[250px] relative">
       <svg className="absolute size-full top-0 left-0 pointer-events-none">
@@ -96,13 +241,40 @@ export const MatchColors = () => {
         ))}
       </svg>
       <ul className="flex flex-col gap-y-4">
-        {colors.map((color, index) => {
+        {columns.colors.map((color, index) => {
+          if (color === null) {
+            return (
+              <li
+                key={index}
+                ref={(el) => {
+                  if (el) {
+                    colorPickerLiRef.current[index] = el;
+                  }
+                }}
+                className="cursor-pointer size-20 rounded-full bg-black/10 relative group"
+                onClick={() => chooseColor(index)}
+              >
+                {roles.includes("TEACHER") ? (
+                  <span
+                    className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteRow(index);
+                    }}
+                  >
+                    &#x2715;
+                  </span>
+                ) : null}
+              </li>
+            );
+          }
+
           const isMatched =
             matches[color] || Object.values(matches).includes(color);
 
           return (
             <li
-              className="cursor-pointer size-20 rounded-full"
+              className="cursor-pointer size-20 rounded-full relative group flex justify-center items-center"
               ref={(ref) => {
                 if (ref) {
                   colorRefs.current[color] = ref;
@@ -119,12 +291,68 @@ export const MatchColors = () => {
                       : "",
               }}
               onClick={() => handleChoose("color", color)}
-            />
+            >
+              {roles.includes("TEACHER") ? (
+                <span
+                  className="opacity-0 transition-all group-hover:opacity-100 absolute top-[20px] -right-[22px]"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    chooseColor(index, color);
+                  }}
+                >
+                  <Image
+                    src="assets/icons/gear.svg"
+                    alt="gear icon"
+                    width={16}
+                    height={16}
+                    className="fill-white"
+                  />
+                </span>
+              ) : null}
+              {roles.includes("TEACHER") ? (
+                <span
+                  className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
+                  onClick={() => deleteRow(index)}
+                >
+                  &#x2715;
+                </span>
+              ) : null}
+            </li>
           );
         })}
+        {roles.includes("TEACHER") ? (
+          <li
+            className="cursor-pointer size-20 rounded-full bg-black/30 text-[40px] text-white flex justify-center items-center"
+            onClick={addRow}
+          >
+            +
+          </li>
+        ) : null}
       </ul>
       <ul className="flex flex-col gap-y-4">
-        {images.map((image, index) => {
+        {columns.images.map((image, index) => {
+          if (image === null) {
+            return (
+              <li
+                key={index}
+                className="cursor-pointer size-20 rounded-full bg-black/10 relative group"
+                onClick={() => chooseImage(index)}
+              >
+                {roles.includes("TEACHER") ? (
+                  <span
+                    className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteRow(index);
+                    }}
+                  >
+                    &#x2715;
+                  </span>
+                ) : null}
+              </li>
+            );
+          }
+
           const isMatched =
             matches[image] || Object.values(matches).includes(image);
           const color = Object.entries(matches).find(
@@ -133,7 +361,7 @@ export const MatchColors = () => {
 
           return (
             <li
-              className="cursor-pointer size-20 rounded-full"
+              className="cursor-pointer size-20 rounded-full relative group"
               key={index}
               ref={(ref) => {
                 if (ref) {
@@ -142,7 +370,7 @@ export const MatchColors = () => {
               }}
             >
               <Image
-                src={`/assets/images/${image}`}
+                src={image}
                 alt=""
                 width="80"
                 height="80"
@@ -156,11 +384,88 @@ export const MatchColors = () => {
                         : "",
                   borderRadius: "100%",
                 }}
+                className="size-full object-cover"
               />
+              {roles.includes("TEACHER") ? (
+                <span
+                  className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
+                  onClick={() => deleteRow(index)}
+                >
+                  &#x2715;
+                </span>
+              ) : null}
+              {roles.includes("TEACHER") ? (
+                <span
+                  className="text-white opacity-0 transition-all group-hover:opacity-100 absolute top-[20px] -right-[22px]"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    chooseImage(index);
+                  }}
+                >
+                  <Image
+                    src="assets/icons/gear.svg"
+                    alt="gear icon"
+                    width={16}
+                    height={16}
+                    className="fill-black"
+                  />
+                </span>
+              ) : null}
             </li>
           );
         })}
+        {roles.includes("TEACHER") ? (
+          <li
+            className="cursor-pointer size-20 rounded-full bg-black/30 text-[40px] text-white flex justify-center items-center"
+            onClick={addRow}
+          >
+            +
+          </li>
+        ) : null}
       </ul>
+
+      <Modal
+        type="gallery"
+        isOpen={isGalleryModalOpen}
+        onClose={() => setIsGalleryModalOpen(false)}
+        onClick={(e) => {
+          setImg(e);
+          setIsGalleryModalOpen(false);
+        }}
+      />
+      {isColorPickerOpen ? (
+        <div
+          className="absolute -translate-y-[50%]"
+          style={{
+            top: colorPickerCoordinates.y,
+            left: colorPickerCoordinates.x,
+          }}
+        >
+          <HexColorPicker
+            color={colorPickerColor}
+            onChange={(newColor) => {
+              setColorPickerColor(newColor);
+
+              const newColors = [...columns.colors];
+              const newMatches = { ...matches };
+
+              if (colorIndexToChange || colorIndexToChange === 0) {
+                if (newColors[colorIndexToChange]) {
+                  const oldValue = newMatches[newColors[colorIndexToChange]];
+                  delete newMatches[newColors[colorIndexToChange]];
+                  newMatches[newColor] = oldValue;
+                }
+                newColors[colorIndexToChange] = newColor;
+              }
+              setColumns((prevState) => ({
+                ...prevState,
+                colors: newColors,
+              }));
+              setMatches(newMatches);
+            }}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };
