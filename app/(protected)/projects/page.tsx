@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MatchColors } from "@/components/blocks";
+import { GuessTheAnimal, MatchColors } from "@/components/blocks";
 
 export default function ProjectsPage() {
   // useEffect(() => {
@@ -18,7 +18,7 @@ export default function ProjectsPage() {
 
   return (
     <div>
-      <MatchColors />
+      <GuessTheAnimal />
     </div>
   );
 }
