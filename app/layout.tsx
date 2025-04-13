@@ -23,10 +23,6 @@ const menu = [
     link: "/blocks",
   },
   {
-    title: "AI Image Generation",
-    link: "/ai-image-generation",
-  },
-  {
     title: "Register",
     link: "/register",
   },
@@ -62,7 +58,7 @@ export default function RootLayout({
           </div>
         </header>
         <ToastProvider>
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 px-[5%]">{children}</main>
         </ToastProvider>
       </body>
     </html>

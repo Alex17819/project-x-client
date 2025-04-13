@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { Router } from "next/router";
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;

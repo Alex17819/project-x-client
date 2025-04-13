@@ -8,7 +8,7 @@ import {
 
 export default function BlocksPage() {
   return (
-    <div className="flex flex-col items-center gap-y-10 pb-100 pt-5">
+    <div className="flex flex-col gap-y-10 pb-100 pt-5">
       <MatchColors />
       <NumberNeighbor />
       <MatchQuantity />
