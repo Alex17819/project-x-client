@@ -102,7 +102,7 @@ export const GuessTheAnimal = () => {
       </div>
       {roles.includes("TEACHER") ? (
         <Button
-          onClick={(prevState) => setIsPreview(!isPreview)}
+          onClick={() => setIsPreview(!isPreview)}
           disabled={!img || !answer}
         >
           Preview

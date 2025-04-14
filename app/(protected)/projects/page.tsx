@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NumberNeighbor } from "@/components/blocks";
+import { MatchQuantity } from "@/components/blocks";
 
 export default function ProjectsPage() {
   // useEffect(() => {
@@ -18,7 +18,7 @@ export default function ProjectsPage() {
 
   return (
     <div>
-      <NumberNeighbor />
+      <MatchQuantity />
     </div>
   );
 }

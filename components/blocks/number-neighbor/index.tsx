@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-const roles: ("USER" | "TEACHER")[] = ["USER"];
+const roles: ("USER" | "TEACHER")[] = ["USER", "TEACHER"];
 
 export const NumberNeighbor = () => {
   const [state, setState] = useState<(number | null)[][][]>([
