@@ -4,16 +4,18 @@ import { useState } from "react";
 import { clsx } from "clsx";
 
 import { generateMatrix } from "@/utils";
+import { Button } from "@/components/ui/button";
 
-const matrix = generateMatrix(4, 4);
+const roles: ("USER" | "TEACHER")[] = ["USER", "TEACHER"];
 
 export const MemoryCards = () => {
-  const [state, setState] = useState(() => matrix);
+  const [state, setState] = useState(generateMatrix(4, 4));
   const [selected, setSelected] = useState<(null | number)[][]>([
     [null, null],
     [null, null],
   ]);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleChange = (rowIndex: number, itemIndex: number) => {
     setSelected((prevState) => {
@@ -71,28 +73,40 @@ export const MemoryCards = () => {
                 (selected[0][0] === rowIndex && selected[0][1] === itemIndex) ||
                 (selected[1][0] === rowIndex && selected[1][1] === itemIndex);
 
+              const showCard = isVisible && roles.includes("TEACHER");
+
               return (
                 <li
                   key={itemIndex}
                   className={clsx(
                     "size-10 flex justify-center items-center border cursor-pointer bg-black transition-colors duration-500 select-none",
                     {
-                      "bg-white": isSelected,
+                      "bg-white": showCard || isSelected,
                     }
                   )}
                   onClick={
-                    isBlocked || isSelected
+                    showCard || isBlocked || isSelected
                       ? () => {}
                       : () => handleChange(rowIndex, itemIndex)
                   }
                 >
-                  {isSelected ? item.value : ""}
+                  {showCard || isSelected ? item.value : ""}
                 </li>
               );
             })}
           </ul>
         );
       })}
+      {roles.includes("TEACHER") ? (
+        <>
+          <Button onClick={() => setIsVisible((prevState) => !prevState)}>
+            {isVisible ? "Hide" : "Show"} all values
+          </Button>
+          <Button onClick={() => setState(generateMatrix(4, 4))}>
+            Shuffle the cards
+          </Button>
+        </>
+      ) : null}
     </div>
   );
 };

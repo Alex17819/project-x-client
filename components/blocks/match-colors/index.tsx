@@ -320,7 +320,7 @@ export const MatchColors = () => {
             </li>
           );
         })}
-        {roles.includes("TEACHER") ? (
+        {roles.includes("TEACHER") && columns.colors.length < 5 ? (
           <li
             className="cursor-pointer size-20 rounded-full bg-black/30 text-[40px] text-white flex justify-center items-center"
             onClick={addRow}
@@ -414,7 +414,7 @@ export const MatchColors = () => {
             </li>
           );
         })}
-        {roles.includes("TEACHER") ? (
+        {roles.includes("TEACHER") && columns.images.length < 5 ? (
           <li
             className="cursor-pointer size-20 rounded-full bg-black/30 text-[40px] text-white flex justify-center items-center"
             onClick={addRow}

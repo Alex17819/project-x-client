@@ -36,10 +36,8 @@ export const GuessTheAnimal = () => {
     }
   };
 
-  console.log(isPreview);
-
   return (
-    <div className="border bg-cyan-300 flex justify-center items-center flex-col">
+    <div className="border flex justify-center items-center flex-col">
       <div className="relative">
         {img ? (
           <Image

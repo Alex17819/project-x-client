@@ -26,7 +26,7 @@ export const NumberNeighbor = () => {
         if (indexColumn === columnIndex) {
           return column.map((row, indexRow) => {
             if (rowIndex === indexRow) {
-              if (value.length > 1) {
+              if (value.length > 2) {
                 return row;
               }
               if (inputIndex === 0) {
