@@ -3,23 +3,20 @@
 import { useEffect, useState } from "react";
 
 import { api } from "@/api/axios";
+import { useQuery } from "@tanstack/react-query";
+import { ProjectsApi } from "@/api/projects";
+import Link from "next/link";
 
 export default function DashboardPage() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: ["PROJECTS_GET"],
+    queryFn: async () => {
+      const response = await ProjectsApi.getProjects();
+      return response.data;
+    },
+  });
 
-  useEffect(() => {
-    const getSmth = async () => {
-      const res = await api.get("/auth/protected", {
-        withCredentials: true,
-      });
-
-      setIsLoading(false);
-
-      console.log(res);
-    };
-
-    getSmth().catch((e) => console.log("PAGE ERROR", e));
-  }, []);
+  console.log(data);
 
   return isLoading ? (
     <div className="size-full flex justify-center items-center">
@@ -27,7 +24,31 @@ export default function DashboardPage() {
     </div>
   ) : (
     <>
-      <h2>Protected route</h2>
+      {!data.length ? (
+        <h2>
+          You do not have any project.{" "}
+          <Link className="text-blue-400" href="/dashboard/create">
+            Create
+          </Link>{" "}
+          the first one
+        </h2>
+      ) : (
+        <>
+          Your projects
+          <div className="mt-2">
+            {data.map(({ id }) => (
+              <Link
+                href={`/projects/${id}`}
+                key={id}
+                className="border border-gray-400 p-2"
+              >
+                {id}
+              </Link>
+            ))}
+          </div>
+          <Link href="/dashboard/create">Create</Link>
+        </>
+      )}
     </>
   );
 }

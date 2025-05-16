@@ -4,8 +4,15 @@ import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/axios";
 import { useRouter } from "next/navigation";
+import { UserRoles } from "@/types/user";
 
 const menu = [
+  {
+    title: "Dashboard",
+    link: "/dashboard",
+    isAuth: true,
+    roles: UserRoles.TEACHER,
+  },
   {
     title: "Blocks",
     link: "/blocks",
@@ -41,6 +48,8 @@ export const Header = () => {
       <div>
         <ul className="flex gap-x-4">
           {menu.map((item, index) => {
+            if (item.isAuth && !user?.data) return;
+
             if (item.link === "/register" && user?.data) {
               return (
                 <li
@@ -56,6 +65,17 @@ export const Header = () => {
                   }}
                 >
                   Logout
+                </li>
+              );
+            }
+
+            if (item.isAuth && user?.data) {
+              return (
+                <li
+                  key={index}
+                  className="hover:text-[#CCD4DE] transition-colors"
+                >
+                  <Link href={item.link}>{item.title}</Link>
                 </li>
               );
             }

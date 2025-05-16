@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, KeyboardEvent } from "react";
+import { useRef, useState, KeyboardEvent, useEffect } from "react";
 import { Modal } from "@/components/modals/modal";
 import { clsx } from "clsx";
 import { Input } from "@/components/ui/input";
@@ -9,12 +9,31 @@ import { Button } from "@/components/ui/button";
 
 const roles = ["USER", "TEACHER"];
 
-export const GuessTheAnimal = () => {
+interface Props {
+  onDataChange?: (data: {
+    img?: string;
+    answer?: string;
+    finalAnswer?: string[];
+  }) => void;
+  data?: {
+    img?: string;
+    answer?: string;
+    finalAnswer?: string[];
+  };
+}
+
+export const GuessTheAnimal = ({ onDataChange, data }: Props) => {
   const [answer, setAnswer] = useState("");
   const [finalAnswer, setFinalAnswer] = useState<string[]>([]);
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
   const [img, setImg] = useState("");
   const [isPreview, setIsPreview] = useState(false);
+
+  useEffect(() => {
+    if (data?.img) setImg(data?.img);
+    if (data?.answer) setAnswer(data?.answer);
+    if (data?.finalAnswer) setFinalAnswer(data?.finalAnswer);
+  }, [data]);
 
   const inputRefs = useRef<HTMLInputElement[]>([]);
 
@@ -24,6 +43,9 @@ export const GuessTheAnimal = () => {
     const updatedAnswer = [...finalAnswer];
     updatedAnswer[index] = value;
     setFinalAnswer(updatedAnswer);
+    onDataChange?.({
+      finalAnswer: updatedAnswer,
+    });
 
     if (value && index < answer.length - 1 && !updatedAnswer[index + 1]) {
       inputRefs.current[index + 1]?.focus();
@@ -91,7 +113,12 @@ export const GuessTheAnimal = () => {
             <Input
               type="text"
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              onChange={(e) => {
+                setAnswer(e.target.value);
+                onDataChange?.({
+                  answer: e.target.value,
+                });
+              }}
               placeholder="Enter your asnwer"
               className="w-full"
             />
@@ -114,6 +141,7 @@ export const GuessTheAnimal = () => {
         onClick={(e) => {
           setImg(e);
           setIsGalleryModalOpen(false);
+          onDataChange?.({ img: e });
         }}
       />
     </div>

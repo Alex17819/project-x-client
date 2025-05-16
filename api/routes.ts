@@ -3,4 +3,5 @@ export const API_ROUTES = {
   login: "/auth/login",
   uploadFile: "/files/upload",
   getFiles: "/files",
+  projects: "/projects",
 } as const;
