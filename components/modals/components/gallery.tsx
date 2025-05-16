@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Overlay } from "../common";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
+import { useQuery } from "@tanstack/react-query";
 
 export const GalleryModal = ({
   onClose,
@@ -28,22 +29,30 @@ export const GalleryModal = ({
   const controllerRef = useRef<AbortController | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const getImages = async () => {
-    const res = await FilesApi.getFiles();
+  const {
+    isLoading: isLoadingImages,
+    error,
+    data,
+    refetch,
+  } = useQuery({
+    queryKey: ["GALLERY_GET_IMAGES"],
+    queryFn: async () => {
+      console.log("REAL FETCH");
+      const res = await FilesApi.getFiles();
 
-    if (res.data.length === 0) {
-      toast.error("No images found");
-      return;
-    }
+      if (res.data.length === 0) {
+        toast.error("No images found");
+        return;
+      }
 
-    setImages(res.data);
+      setImages(res.data);
 
-    return res.data;
-  };
+      return res.data;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
   useEffect(() => {
-    getImages();
-
     return () => {
       controllerRef.current?.abort();
     };
@@ -95,8 +104,7 @@ export const GalleryModal = ({
         filename: filename + ".png",
       });
 
-      const newImages = await getImages();
-      setImages(newImages);
+      await refetch();
 
       toast.success("Image uploaded successfully.");
       /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -127,8 +135,7 @@ export const GalleryModal = ({
           filename: file.name,
         });
         toast.success("Image uploaded!");
-        const newImages = await getImages();
-        setImages(newImages);
+        await refetch();
       } catch (e) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
@@ -176,7 +183,7 @@ export const GalleryModal = ({
           </ul>
         </div>
         <div className="relative px-4">
-          {!url && isLoading ? (
+          {(!url && isLoading) || isLoadingImages ? (
             <div className="absolute top-0 left-0 size-full flex justify-center items-center bg-white">
               <div className="loader" />
             </div>
@@ -185,7 +192,7 @@ export const GalleryModal = ({
             <>
               <h3>Your images</h3>
               <ul className="my-grid grid xxs:grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
-                {images.map((image, index) => {
+                {data?.map((image, index) => {
                   return (
                     <li
                       key={index}

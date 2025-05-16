@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { UserRoles } from "@/types/user";
 
-const roles: ("USER" | "TEACHER")[] = ["USER", "TEACHER"];
-
-export const NumberNeighbor = () => {
+export const NumberNeighbor = ({ roles }: { roles?: UserRoles[] }) => {
   const [state, setState] = useState<(number | null)[][][]>([
     [[null, null, null]],
   ]);
@@ -35,7 +34,7 @@ export const NumberNeighbor = () => {
               if (inputIndex === 2) {
                 return [row[0], row[1], value === "" ? null : Number(value)];
               }
-              if (inputIndex === 1 && roles.includes("TEACHER")) {
+              if (inputIndex === 1 && roles?.includes(UserRoles.TEACHER)) {
                 return [row[0], value === "" ? null : Number(value), row[2]];
               }
             }
@@ -129,7 +128,7 @@ export const NumberNeighbor = () => {
                       })}
                     </div>
                     {rowIndex === column.length - 1 &&
-                    roles.includes("TEACHER") &&
+                    roles?.includes(UserRoles.TEACHER) &&
                     column.length < 5 ? (
                       <div
                         className="text-white bg-black/30 max-w-[188px] h-[60px] rounded-lg cursor-pointer flex justify-center items-center"
@@ -138,7 +137,7 @@ export const NumberNeighbor = () => {
                         Add row
                       </div>
                     ) : null}
-                    {roles.includes("TEACHER") ? (
+                    {roles?.includes(UserRoles.TEACHER) ? (
                       <span
                         className="absolute top-0 -right-[10px] text-black opacity-0 transition-all group-hover:opacity-100 cursor-pointer"
                         onClick={(e) => {
@@ -154,7 +153,7 @@ export const NumberNeighbor = () => {
               })}
             </div>
             {columnIndex === state.length - 1 &&
-            roles.includes("TEACHER") &&
+            roles?.includes(UserRoles.TEACHER) &&
             state.length < 3 ? (
               <div
                 className="text-white bg-black/30 w-[188px] max-h-[60px] rounded-lg cursor-pointer flex justify-center items-center"

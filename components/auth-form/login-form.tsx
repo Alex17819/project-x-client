@@ -39,7 +39,7 @@ export const LoginForm = () => {
       reset();
       return;
     }
-    router.push("/dashboard");
+    router.push("/projects");
   };
 
   return (

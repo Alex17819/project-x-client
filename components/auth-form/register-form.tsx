@@ -47,7 +47,7 @@ export const RegisterForm = () => {
       return;
     }
     toast.success(res.data.message);
-    router.push("/dashboard");
+    router.push("/projects");
   };
 
   return (
@@ -100,7 +100,7 @@ export const RegisterForm = () => {
               name="isTeacher"
               id="isTeacher"
             />
-            Create account as teacher
+            Create account as a teacher
           </label>
         </div>
         <button

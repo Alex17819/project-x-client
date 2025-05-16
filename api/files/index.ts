@@ -12,6 +12,6 @@ export class FilesApi {
   }
 
   static async getFiles() {
-    return await api.get(API_ROUTES.getFiles);
+    return await api.get<{ link: string }[]>(API_ROUTES.getFiles);
   }
 }

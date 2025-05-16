@@ -6,6 +6,8 @@ import Link from "next/link";
 
 import { ToastProvider } from "@/components/providers/toastify";
 import "./globals.css";
+import { ReactQueryClientProvider } from "@/components/providers/react-query";
+import { Header } from "@/components/header";
 
 const comicNeue = Comic_Neue({
   variable: "--font-comic-neue",
@@ -17,17 +19,6 @@ export const metadata: Metadata = {
   title: "Project-x",
 };
 
-const menu = [
-  {
-    title: "Blocks",
-    link: "/blocks",
-  },
-  {
-    title: "Register",
-    link: "/register",
-  },
-];
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,28 +29,12 @@ export default function RootLayout({
       <body
         className={`${comicNeue.className} bg-[#ECEEF0] h-screen flex flex-col`}
       >
-        <header className="bg-[#3E53A0] px-[5%] text-white flex items-center justify-between py-5">
-          <Link href="/blocks">
-            <h1 className="text-[20px] font-bold hover:text-[#CCD4DE] transition-colors">
-              Project-X
-            </h1>
-          </Link>
-          <div>
-            <ul className="flex gap-x-4">
-              {menu.map((item, index) => (
-                <li
-                  key={index}
-                  className="hover:text-[#CCD4DE] transition-colors"
-                >
-                  <Link href={item.link}>{item.title}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </header>
-        <ToastProvider>
-          <main className="flex-1 px-[5%]">{children}</main>
-        </ToastProvider>
+        <ReactQueryClientProvider>
+          <ToastProvider>
+            <Header />
+            <main className="flex-1 px-[5%]">{children}</main>
+          </ToastProvider>
+        </ReactQueryClientProvider>
       </body>
     </html>
   );
