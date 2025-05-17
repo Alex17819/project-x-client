@@ -5,9 +5,5 @@ export default async function ProjectsLayout({
 }: {
   children: ReactNode;
 }) {
-  return (
-    <div className="flex min-h-screen">
-      <main className="flex-1 p-6">{children}</main>
-    </div>
-  );
+  return <div className="">{children}</div>;
 }

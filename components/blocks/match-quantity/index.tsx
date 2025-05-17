@@ -23,7 +23,20 @@ interface State {
   numbers: { id: string; value: number | null }[];
 }
 
-export const MatchQuantity = () => {
+interface Props {
+  onDataChange?: (data: {
+    lines?: Line[];
+    matches?: Record<string, string>;
+    state?: State;
+  }) => void;
+  data?: {
+    lines?: Line[];
+    matches?: Record<string, string>;
+    state?: State;
+  };
+}
+
+export const MatchQuantity = ({ onDataChange, data }: Props) => {
   const [state, setState] = useState<State>({
     images: [],
     numbers: [],
@@ -45,6 +58,14 @@ export const MatchQuantity = () => {
   const imageRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const numberRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+  useEffect(() => {
+    console.log("DATA", data);
+    if (!data) return;
+    if (data.matches) setMatches(data?.matches);
+    if (data.state) setState(data?.state);
+    if (data.lines) setLines(data?.lines);
+  }, [data]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -69,7 +90,12 @@ export const MatchQuantity = () => {
       return null;
     });
 
-    setLines(newLines.filter((line) => line !== null));
+    const newLinesFiltered = newLines.filter((line) => line !== null);
+
+    setLines(newLinesFiltered);
+    onDataChange?.({
+      lines: newLinesFiltered,
+    });
   }, [matches]);
 
   const handleSelect = (type: "image" | "number", value: string) => {
@@ -90,6 +116,9 @@ export const MatchQuantity = () => {
           });
 
           updatedMatches[newSelected.image!] = newSelected.number!;
+          onDataChange?.({
+            matches: updatedMatches,
+          });
           return updatedMatches;
         });
 
@@ -102,7 +131,7 @@ export const MatchQuantity = () => {
 
   const addRow = () => {
     setState((prevState) => {
-      return {
+      const newRow = {
         images: [...prevState.images, null],
         numbers: [
           ...prevState.numbers,
@@ -112,6 +141,10 @@ export const MatchQuantity = () => {
           },
         ],
       };
+      onDataChange?.({
+        state: newRow,
+      });
+      return newRow;
     });
   };
 
@@ -122,14 +155,19 @@ export const MatchQuantity = () => {
 
   const onChange = (index: number, value: string) => {
     const newValue = value === "" ? null : Number(value);
-    console.log(newValue);
 
-    setState((prevState) => ({
-      ...prevState,
-      numbers: prevState.numbers.map((number, numberIndex) =>
-        numberIndex === index ? { ...number, value: newValue } : { ...number }
-      ),
-    }));
+    setState((prevState) => {
+      const newState = {
+        ...prevState,
+        numbers: prevState.numbers.map((number, numberIndex) =>
+          numberIndex === index ? { ...number, value: newValue } : { ...number }
+        ),
+      };
+      onDataChange?.({
+        state: newState,
+      });
+      return newState;
+    });
   };
 
   useEffect(() => {
@@ -143,7 +181,7 @@ export const MatchQuantity = () => {
     if (img === "" || imageIndexToChange === null) return;
 
     setState((prevState) => {
-      return {
+      const newState = {
         ...prevState,
         images: prevState.images.map((image, index) => {
           if (imageIndexToChange === index) {
@@ -153,6 +191,8 @@ export const MatchQuantity = () => {
           return image;
         }),
       };
+      onDataChange?.({ state: newState });
+      return newState;
     });
 
     setImg("");
@@ -194,9 +234,11 @@ export const MatchQuantity = () => {
     });
     setMatches(newMatches);
     setState(newState);
+    onDataChange?.({
+      matches: newMatches,
+      state: newState,
+    });
   };
-
-  console.log(matches);
 
   useEffect(() => {
     if (editableIndex !== null) {
@@ -292,7 +334,7 @@ export const MatchQuantity = () => {
                   }}
                 >
                   <Image
-                    src="assets/icons/gear.svg"
+                    src="/assets/icons/gear.svg"
                     alt="gear icon"
                     width={16}
                     height={16}
@@ -373,7 +415,7 @@ export const MatchQuantity = () => {
                     }}
                   >
                     <Image
-                      src="assets/icons/gear.svg"
+                      src="/assets/icons/gear.svg"
                       alt="gear icon"
                       width={16}
                       height={16}

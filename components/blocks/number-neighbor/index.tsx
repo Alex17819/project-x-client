@@ -1,13 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { UserRoles } from "@/types/user";
 
-export const NumberNeighbor = ({ roles }: { roles?: UserRoles[] }) => {
+interface Props {
+  onDataChange?: (data: { state?: (number | null)[][][] }) => void;
+  data?: {
+    state?: (number | null)[][][];
+  };
+  roles?: UserRoles[];
+}
+
+export const NumberNeighbor = ({ roles, onDataChange, data }: Props) => {
   const [state, setState] = useState<(number | null)[][][]>([
     [[null, null, null]],
   ]);
+
+  useEffect(() => {
+    if (!data) return;
+    if (data.state) setState(data.state);
+  }, [data]);
 
   const onChange = ({
     columnIndex,
@@ -21,7 +34,7 @@ export const NumberNeighbor = ({ roles }: { roles?: UserRoles[] }) => {
     value: string;
   }) => {
     setState((prevState) => {
-      return prevState.map((column, indexColumn) => {
+      const newState = prevState.map((column, indexColumn) => {
         if (indexColumn === columnIndex) {
           return column.map((row, indexRow) => {
             if (rowIndex === indexRow) {
@@ -45,22 +58,36 @@ export const NumberNeighbor = ({ roles }: { roles?: UserRoles[] }) => {
 
         return column;
       });
+      onDataChange?.({
+        state: newState,
+      });
+      return newState;
     });
   };
 
   const addRow = (columnIndex: number) => {
     setState((prevState) => {
-      return prevState.map((column, index) => {
+      const newState = prevState.map((column, index) => {
         if (columnIndex === index) {
           return [...column, [null, null, null]];
         }
         return column;
       });
+      onDataChange?.({
+        state: newState,
+      });
+      return newState;
     });
   };
 
   const addColumn = () => {
-    setState((prevState) => [...prevState, [[null, null, null]]]);
+    setState((prevState) => {
+      const newState = [...prevState, [[null, null, null]]];
+      onDataChange?.({
+        state: newState,
+      });
+      return newState;
+    });
   };
 
   const deleteItem = ({
@@ -79,6 +106,9 @@ export const NumberNeighbor = ({ roles }: { roles?: UserRoles[] }) => {
       });
       const cleanedState = newState.filter((column) => column.length > 0);
       if (cleanedState.length === 0) return prevState;
+      onDataChange?.({
+        state: cleanedState,
+      });
       return cleanedState;
     });
   };

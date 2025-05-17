@@ -36,8 +36,6 @@ export const Header = () => {
     enabled: false,
   });
 
-  console.log("HEADER", user?.data);
-
   return (
     <header className="bg-[#3E53A0] px-[5%] text-white flex items-center justify-between py-5">
       <Link href="/blocks">

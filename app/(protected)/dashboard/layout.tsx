@@ -5,9 +5,5 @@ export default async function DashboardLayout({
 }: {
   children: ReactNode;
 }) {
-  return (
-    <div className="flex min-h-screen">
-      <main className="flex-1 p-6">{children}</main>
-    </div>
-  );
+  return <div className="mt-2">{children}</div>;
 }

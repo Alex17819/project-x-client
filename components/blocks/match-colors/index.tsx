@@ -21,7 +21,20 @@ interface Columns {
   images: (string | null)[];
 }
 
-export const MatchColors = () => {
+interface Props {
+  onDataChange?: (data: {
+    lines?: Line[];
+    matches?: Record<string, string>;
+    columns?: Columns;
+  }) => void;
+  data?: {
+    lines?: Line[];
+    matches?: Record<string, string>;
+    columns?: Columns;
+  };
+}
+
+export const MatchColors = ({ onDataChange, data }: Props) => {
   const [columns, setColumns] = useState<Columns>({
     colors: [null],
     images: [null],
@@ -59,6 +72,13 @@ export const MatchColors = () => {
   const colorPickerLiRef = useRef<Record<string, HTMLLIElement | null>>({});
 
   useEffect(() => {
+    if (!data) return;
+    if (data?.matches) setMatches(data?.matches);
+    if (data?.lines) setLines(data?.lines);
+    if (data?.columns) setColumns(data?.columns);
+  }, [data]);
+
+  useEffect(() => {
     if (!containerRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
 
@@ -81,7 +101,12 @@ export const MatchColors = () => {
       return null;
     });
 
-    setLines(newLines.filter((line) => line !== null));
+    const newLinesFiltered = newLines.filter((line) => line !== null);
+
+    setLines(newLinesFiltered);
+    onDataChange?.({
+      lines: newLinesFiltered,
+    });
   }, [matches]);
 
   const handleChoose = (type: "color" | "image", value: string) => {
@@ -101,19 +126,29 @@ export const MatchColors = () => {
           });
 
           updatedMatches[newSelected.color!] = newSelected.image!;
+          onDataChange?.({
+            matches: updatedMatches,
+          });
           return updatedMatches;
         });
         return { color: null, image: null };
       }
+
       return newSelected;
     });
   };
 
   const addRow = () => {
-    setColumns((prevState) => ({
-      colors: [...prevState.colors, null],
-      images: [...prevState.images, null],
-    }));
+    setColumns((prevState) => {
+      const newRows = {
+        colors: [...prevState.colors, null],
+        images: [...prevState.images, null],
+      };
+      onDataChange?.({
+        columns: newRows,
+      });
+      return newRows;
+    });
   };
 
   const chooseColor = (
@@ -169,6 +204,13 @@ export const MatchColors = () => {
       ...prevState,
       images: newImages,
     }));
+    onDataChange?.({
+      matches: newMatches,
+      columns: {
+        ...columns,
+        images: newImages,
+      },
+    });
     setMatches(newMatches);
     setImg("");
     setImageIndexToChange(null);
@@ -201,7 +243,10 @@ export const MatchColors = () => {
         delete newMatches[key];
       }
     });
-
+    onDataChange?.({
+      matches: newMatches,
+      columns: newColumns,
+    });
     setMatches(newMatches);
   };
 
@@ -301,7 +346,7 @@ export const MatchColors = () => {
                   }}
                 >
                   <Image
-                    src="assets/icons/gear.svg"
+                    src="/assets/icons/gear.svg"
                     alt="gear icon"
                     width={16}
                     height={16}
@@ -403,7 +448,7 @@ export const MatchColors = () => {
                   }}
                 >
                   <Image
-                    src="assets/icons/gear.svg"
+                    src="/assets/icons/gear.svg"
                     alt="gear icon"
                     width={16}
                     height={16}
@@ -462,6 +507,10 @@ export const MatchColors = () => {
                 colors: newColors,
               }));
               setMatches(newMatches);
+              onDataChange?.({
+                matches: newMatches,
+                columns: { ...columns, colors: newColors },
+              });
             }}
           />
         </div>

@@ -6,6 +6,7 @@ import { api } from "@/api/axios";
 import { useQuery } from "@tanstack/react-query";
 import { ProjectsApi } from "@/api/projects";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const { data, isLoading } = useQuery({
@@ -27,27 +28,32 @@ export default function DashboardPage() {
       {!data.length ? (
         <h2>
           You do not have any project.{" "}
-          <Link className="text-blue-400" href="/dashboard/create">
+          <Link className="text-blue-400" href="/projects/create">
             Create
           </Link>{" "}
           the first one
         </h2>
       ) : (
-        <>
-          Your projects
-          <div className="mt-2">
-            {data.map(({ id }) => (
-              <Link
-                href={`/projects/${id}`}
-                key={id}
-                className="border border-gray-400 p-2"
-              >
-                {id}
-              </Link>
-            ))}
+        <div className="flex justify-between">
+          <div>
+            <h2>Your projects</h2>
+            <div className="mt-2 flex gap-x-2">
+              {data.map(({ id }) => (
+                <Link
+                  href={`/projects/${id}`}
+                  key={id}
+                  className="border border-gray-400 p-2"
+                >
+                  {id}
+                </Link>
+              ))}
+            </div>
           </div>
-          <Link href="/dashboard/create">Create</Link>
-        </>
+
+          <Button className="h-10">
+            <Link href="/projects/create">Create new</Link>
+          </Button>
+        </div>
       )}
     </>
   );

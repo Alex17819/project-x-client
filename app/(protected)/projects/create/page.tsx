@@ -11,6 +11,9 @@ import {
 } from "@/components/blocks";
 import { Button } from "@/components/ui/button";
 import { ProjectsApi } from "@/api/projects";
+import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/api/axios";
 
 type GameType =
   | "GuessTheAnimal"
@@ -33,6 +36,15 @@ const gameNames: GameType[] = [
 ];
 
 export default function CreateProjectPage() {
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["USER_GET"],
+    queryFn: async () => {
+      return await api.get("/user");
+    },
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+  });
+
   const [games, setGames] = useState<Game[]>([]);
 
   const addGame = (type: GameType) => {
@@ -51,8 +63,14 @@ export default function CreateProjectPage() {
   };
 
   const saveProject = async () => {
-    console.log(JSON.stringify(games));
-    await ProjectsApi.saveProject(games);
+    if (!games?.length) {
+      toast.error("Add at least one game");
+      return;
+    }
+    try {
+      await ProjectsApi.saveProject(games);
+      toast.success("Project saved successfully");
+    } catch (error) {}
   };
 
   return (
@@ -81,16 +99,37 @@ export default function CreateProjectPage() {
               );
             }
             case "MatchColors": {
-              return <MatchColors key={`${type}-${index}`} />;
+              return (
+                <MatchColors
+                  key={`${type}-${index}`}
+                  onDataChange={(data) => handleDataChange(index, data)}
+                />
+              );
             }
             case "MatchQuantity": {
-              return <MatchQuantity key={`${type}-${index}`} />;
+              return (
+                <MatchQuantity
+                  key={`${type}-${index}`}
+                  onDataChange={(data) => handleDataChange(index, data)}
+                />
+              );
             }
             case "MemoryCards": {
-              return <MemoryCards key={`${type}-${index}`} />;
+              return (
+                <MemoryCards
+                  key={`${type}-${index}`}
+                  onDataChange={(data) => handleDataChange(index, data)}
+                />
+              );
             }
             case "NumberNeighbor": {
-              return <NumberNeighbor key={`${type}-${index}`} />;
+              return (
+                <NumberNeighbor
+                  key={`${type}-${index}`}
+                  onDataChange={(data) => handleDataChange(index, data)}
+                  roles={user?.data?.roles}
+                />
+              );
             }
             default: {
               return null;

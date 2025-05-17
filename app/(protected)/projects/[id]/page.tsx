@@ -12,7 +12,7 @@ import {
 import { ProjectsApi } from "@/api/projects";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Game } from "@/app/(protected)/dashboard/create/page";
+import { Game } from "@/app/(protected)/projects/create/page";
 
 export default function ProjectsPage() {
   const [parsedData, setParsedData] = useState<Game[]>([]);
@@ -47,16 +47,16 @@ export default function ProjectsPage() {
             return <GuessTheAnimal key={`${type}-${index}`} data={data} />;
           }
           case "MatchColors": {
-            return <MatchColors key={`${type}-${index}`} />;
+            return <MatchColors key={`${type}-${index}`} data={data} />;
           }
           case "MatchQuantity": {
-            return <MatchQuantity key={`${type}-${index}`} />;
+            return <MatchQuantity key={`${type}-${index}`} data={data} />;
           }
           case "MemoryCards": {
-            return <MemoryCards key={`${type}-${index}`} />;
+            return <MemoryCards key={`${type}-${index}`} data={data} />;
           }
           case "NumberNeighbor": {
-            return <NumberNeighbor key={`${type}-${index}`} />;
+            return <NumberNeighbor key={`${type}-${index}`} data={data} />;
           }
           default: {
             return null;

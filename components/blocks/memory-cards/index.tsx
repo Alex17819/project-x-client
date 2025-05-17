@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { clsx } from "clsx";
 
 import { generateMatrix } from "@/utils";
@@ -8,14 +8,37 @@ import { Button } from "@/components/ui/button";
 
 const roles: ("USER" | "TEACHER")[] = ["USER", "TEACHER"];
 
-export const MemoryCards = () => {
-  const [state, setState] = useState(generateMatrix(4, 4));
+interface Props {
+  onDataChange?: (data: {
+    state?: { value: number; isMatched: boolean }[][];
+  }) => void;
+  data?: {
+    state?: { value: number; isMatched: boolean }[][];
+  };
+}
+
+export const MemoryCards = ({ onDataChange, data }: Props) => {
+  const [state, setState] = useState<{ value: number; isMatched: boolean }[][]>(
+    []
+  );
   const [selected, setSelected] = useState<(null | number)[][]>([
     [null, null],
     [null, null],
   ]);
   const [isBlocked, setIsBlocked] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (!data) {
+      const matrix = generateMatrix(4, 4);
+      setState(matrix);
+      onDataChange?.({
+        state: matrix,
+      });
+      return;
+    }
+    if (data.state) setState(data.state);
+  }, [data]);
 
   const handleChange = (rowIndex: number, itemIndex: number) => {
     setSelected((prevState) => {
@@ -38,6 +61,9 @@ export const MemoryCards = () => {
           newState[updatedState[0][0]!][updatedState[0][1]!].isMatched = true;
           newState[updatedState[1][0]!][updatedState[1][1]!].isMatched = true;
           setState(newState);
+          onDataChange?.({
+            state: newState,
+          });
           setTimeout(() => {
             setSelected([
               [null, null],
