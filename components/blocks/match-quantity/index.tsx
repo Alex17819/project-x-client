@@ -34,12 +34,18 @@ interface Props {
     matches?: Record<string, string>;
     state?: State;
   };
+  isEditable?: boolean;
 }
 
-export const MatchQuantity = ({ onDataChange, data }: Props) => {
+export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
   const [state, setState] = useState<State>({
-    images: [],
-    numbers: [],
+    images: [null],
+    numbers: [
+      {
+        value: 0,
+        id: nanoid(),
+      },
+    ],
   });
   const [selected, setSelected] = useState({
     image: null,
@@ -60,7 +66,6 @@ export const MatchQuantity = ({ onDataChange, data }: Props) => {
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   useEffect(() => {
-    console.log("DATA", data);
     if (!data) return;
     if (data.matches) setMatches(data?.matches);
     if (data.state) setState(data?.state);
@@ -269,7 +274,10 @@ export const MatchQuantity = ({ onDataChange, data }: Props) => {
                 key={index}
                 className="bg-black/30 size-20 rounded-full cursor-pointer flex justify-center
                 items-center relative group"
-                onClick={() => openGalleryModal(index)}
+                onClick={() => {
+                  if (!isEditable) return;
+                  openGalleryModal(index);
+                }}
               >
                 <Image
                   className="size-full rounded-full"
@@ -278,7 +286,7 @@ export const MatchQuantity = ({ onDataChange, data }: Props) => {
                   height={80}
                   alt="animals"
                 />
-                {roles.includes("TEACHER") ? (
+                {roles.includes("TEACHER") && isEditable ? (
                   <span
                     className="absolute top-0 -right-[20px] text-black opacity-0 transition-all group-hover:opacity-100"
                     onClick={(e) => {
@@ -314,7 +322,7 @@ export const MatchQuantity = ({ onDataChange, data }: Props) => {
                 height={80}
                 alt="animals"
               />
-              {roles.includes("TEACHER") ? (
+              {roles.includes("TEACHER") && isEditable ? (
                 <span
                   className="absolute top-0 -right-[20px] text-black opacity-0 transition-all group-hover:opacity-100"
                   onClick={(e) => {
@@ -325,7 +333,7 @@ export const MatchQuantity = ({ onDataChange, data }: Props) => {
                   &#x2715;
                 </span>
               ) : null}
-              {roles.includes("TEACHER") ? (
+              {roles.includes("TEACHER") && isEditable ? (
                 <span
                   className="opacity-0 transition-all group-hover:opacity-100 absolute top-[20px] -right-[22px]"
                   onClick={(e) => {
@@ -345,7 +353,7 @@ export const MatchQuantity = ({ onDataChange, data }: Props) => {
             </li>
           );
         })}
-        {roles.includes("TEACHER") && state.images.length < 5 ? (
+        {roles.includes("TEACHER") && isEditable && state.images.length < 5 ? (
           <li
             className="bg-black/30 size-20 rounded-full cursor-pointer text-[40px] text-white flex justify-center items-center"
             onClick={addRow}
@@ -363,14 +371,14 @@ export const MatchQuantity = ({ onDataChange, data }: Props) => {
               }}
               key={index}
               className={clsx(
-                "cursor-pointer size-20 rounded-full border-2 flex justify-center items-center group relative",
+                "cursor-pointer size-20 rounded-full border-2 flex justify-center items-center group relative text-3xl",
                 {
                   "border-blue-500": selected.number === number.id,
                 }
               )}
               onClick={() => handleSelect("number", number.id)}
             >
-              {roles.includes("TEACHER") ? (
+              {roles.includes("TEACHER") && isEditable ? (
                 <>
                   <input
                     ref={(el) => {
@@ -429,7 +437,7 @@ export const MatchQuantity = ({ onDataChange, data }: Props) => {
             </li>
           );
         })}
-        {roles.includes("TEACHER") && state.numbers.length < 5 ? (
+        {roles.includes("TEACHER") && isEditable && state.numbers.length < 5 ? (
           <li
             className="bg-black/30 size-20 rounded-full cursor-pointer text-[40px] text-white flex justify-center items-center"
             onClick={addRow}

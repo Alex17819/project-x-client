@@ -15,9 +15,10 @@ interface Props {
   data?: {
     state?: { value: number; isMatched: boolean }[][];
   };
+  isEditable?: boolean;
 }
 
-export const MemoryCards = ({ onDataChange, data }: Props) => {
+export const MemoryCards = ({ onDataChange, data, isEditable }: Props) => {
   const [state, setState] = useState<{ value: number; isMatched: boolean }[][]>(
     []
   );
@@ -99,7 +100,8 @@ export const MemoryCards = ({ onDataChange, data }: Props) => {
                 (selected[0][0] === rowIndex && selected[0][1] === itemIndex) ||
                 (selected[1][0] === rowIndex && selected[1][1] === itemIndex);
 
-              const showCard = isVisible && roles.includes("TEACHER");
+              const showCard =
+                isVisible && roles.includes("TEACHER") && isEditable;
 
               return (
                 <li
@@ -123,7 +125,7 @@ export const MemoryCards = ({ onDataChange, data }: Props) => {
           </ul>
         );
       })}
-      {roles.includes("TEACHER") ? (
+      {roles.includes("TEACHER") && isEditable ? (
         <>
           <Button onClick={() => setIsVisible((prevState) => !prevState)}>
             {isVisible ? "Hide" : "Show"} all values

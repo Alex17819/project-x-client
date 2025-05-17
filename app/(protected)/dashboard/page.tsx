@@ -40,7 +40,7 @@ export default function DashboardPage() {
             <div className="mt-2 flex gap-x-2">
               {data.map(({ id }) => (
                 <Link
-                  href={`/projects/${id}`}
+                  href={`/projects/view/${id}`}
                   key={id}
                   className="border border-gray-400 p-2"
                 >

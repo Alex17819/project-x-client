@@ -32,9 +32,14 @@ interface Props {
     matches?: Record<string, string>;
     columns?: Columns;
   };
+  isEditable?: boolean;
 }
 
-export const MatchColors = ({ onDataChange, data }: Props) => {
+export const MatchColors = ({
+  onDataChange,
+  data,
+  isEditable = false,
+}: Props) => {
   const [columns, setColumns] = useState<Columns>({
     colors: [null],
     images: [null],
@@ -164,8 +169,8 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
 
     const rect = element.getBoundingClientRect();
     setColorPickerCoordinates({
-      x: rect.left + window.scrollX,
-      y: rect.top + window.scrollY,
+      x: rect.left + 30 + window.pageXOffset,
+      y: element.offsetTop,
     });
     setIsColorPickerOpen(true);
   };
@@ -259,6 +264,10 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
         !(e.target as HTMLElement).classList.contains("react-colorful__pointer")
       ) {
         setIsColorPickerOpen(false);
+        setColorPickerCoordinates({
+          x: 0,
+          y: 0,
+        });
         setColorIndexToChange(null);
       }
     };
@@ -297,9 +306,12 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
                   }
                 }}
                 className="cursor-pointer size-20 rounded-full bg-black/10 relative group"
-                onClick={() => chooseColor(index)}
+                onClick={() => {
+                  if (!isEditable) return;
+                  chooseColor(index);
+                }}
               >
-                {roles.includes("TEACHER") ? (
+                {roles.includes("TEACHER") && isEditable ? (
                   <span
                     className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
                     onClick={(e) => {
@@ -337,7 +349,7 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
               }}
               onClick={() => handleChoose("color", color)}
             >
-              {roles.includes("TEACHER") ? (
+              {roles.includes("TEACHER") && isEditable ? (
                 <span
                   className="opacity-0 transition-all group-hover:opacity-100 absolute top-[20px] -right-[22px]"
                   onClick={(e) => {
@@ -354,7 +366,7 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
                   />
                 </span>
               ) : null}
-              {roles.includes("TEACHER") ? (
+              {roles.includes("TEACHER") && isEditable ? (
                 <span
                   className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
                   onClick={() => deleteRow(index)}
@@ -365,7 +377,9 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
             </li>
           );
         })}
-        {roles.includes("TEACHER") && columns.colors.length < 5 ? (
+        {roles.includes("TEACHER") &&
+        isEditable &&
+        columns.colors.length < 5 ? (
           <li
             className="cursor-pointer size-20 rounded-full bg-black/30 text-[40px] text-white flex justify-center items-center"
             onClick={addRow}
@@ -381,9 +395,12 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
               <li
                 key={index}
                 className="cursor-pointer size-20 rounded-full bg-black/10 relative group"
-                onClick={() => chooseImage(index)}
+                onClick={() => {
+                  if (!isEditable) return;
+                  chooseImage(index);
+                }}
               >
-                {roles.includes("TEACHER") ? (
+                {roles.includes("TEACHER") && isEditable ? (
                   <span
                     className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
                     onClick={(e) => {
@@ -431,7 +448,7 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
                 }}
                 className="size-full object-cover"
               />
-              {roles.includes("TEACHER") ? (
+              {roles.includes("TEACHER") && isEditable ? (
                 <span
                   className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
                   onClick={() => deleteRow(index)}
@@ -439,7 +456,7 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
                   &#x2715;
                 </span>
               ) : null}
-              {roles.includes("TEACHER") ? (
+              {roles.includes("TEACHER") && isEditable ? (
                 <span
                   className="text-white opacity-0 transition-all group-hover:opacity-100 absolute top-[20px] -right-[22px]"
                   onClick={(e) => {
@@ -459,7 +476,9 @@ export const MatchColors = ({ onDataChange, data }: Props) => {
             </li>
           );
         })}
-        {roles.includes("TEACHER") && columns.images.length < 5 ? (
+        {roles.includes("TEACHER") &&
+        isEditable &&
+        columns.images.length < 5 ? (
           <li
             className="cursor-pointer size-20 rounded-full bg-black/30 text-[40px] text-white flex justify-center items-center"
             onClick={addRow}

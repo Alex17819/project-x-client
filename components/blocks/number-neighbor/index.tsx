@@ -10,9 +10,15 @@ interface Props {
     state?: (number | null)[][][];
   };
   roles?: UserRoles[];
+  isEditable?: boolean;
 }
 
-export const NumberNeighbor = ({ roles, onDataChange, data }: Props) => {
+export const NumberNeighbor = ({
+  roles,
+  onDataChange,
+  data,
+  isEditable,
+}: Props) => {
   const [state, setState] = useState<(number | null)[][][]>([
     [[null, null, null]],
   ]);
@@ -47,7 +53,11 @@ export const NumberNeighbor = ({ roles, onDataChange, data }: Props) => {
               if (inputIndex === 2) {
                 return [row[0], row[1], value === "" ? null : Number(value)];
               }
-              if (inputIndex === 1 && roles?.includes(UserRoles.TEACHER)) {
+              if (
+                inputIndex === 1 &&
+                roles?.includes(UserRoles.TEACHER) &&
+                isEditable
+              ) {
                 return [row[0], value === "" ? null : Number(value), row[2]];
               }
             }
@@ -159,6 +169,7 @@ export const NumberNeighbor = ({ roles, onDataChange, data }: Props) => {
                     </div>
                     {rowIndex === column.length - 1 &&
                     roles?.includes(UserRoles.TEACHER) &&
+                    isEditable &&
                     column.length < 5 ? (
                       <div
                         className="text-white bg-black/30 max-w-[188px] h-[60px] rounded-lg cursor-pointer flex justify-center items-center"
@@ -167,7 +178,7 @@ export const NumberNeighbor = ({ roles, onDataChange, data }: Props) => {
                         Add row
                       </div>
                     ) : null}
-                    {roles?.includes(UserRoles.TEACHER) ? (
+                    {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                       <span
                         className="absolute top-0 -right-[10px] text-black opacity-0 transition-all group-hover:opacity-100 cursor-pointer"
                         onClick={(e) => {
@@ -184,6 +195,7 @@ export const NumberNeighbor = ({ roles, onDataChange, data }: Props) => {
             </div>
             {columnIndex === state.length - 1 &&
             roles?.includes(UserRoles.TEACHER) &&
+            isEditable &&
             state.length < 3 ? (
               <div
                 className="text-white bg-black/30 w-[188px] max-h-[60px] rounded-lg cursor-pointer flex justify-center items-center"

@@ -13,6 +13,9 @@ import { ProjectsApi } from "@/api/projects";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Game } from "@/app/(protected)/projects/create/page";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { UserRoles } from "@/types/user";
 
 export default function ProjectsPage() {
   const [parsedData, setParsedData] = useState<Game[]>([]);
@@ -23,6 +26,14 @@ export default function ProjectsPage() {
     queryKey: [`PROJECT_${id}_GET`],
     queryFn: async () => {
       return await ProjectsApi.getProjectData(id);
+    },
+    retry: false,
+  });
+
+  const { data: userData, isLoading: isUserLoading } = useQuery({
+    queryKey: ["USER_GET"],
+    queryFn: async () => {
+      return await api.get("/user");
     },
     retry: false,
     staleTime: 1000 * 60 * 5,
@@ -41,6 +52,11 @@ export default function ProjectsPage() {
 
   return (
     <div>
+      {userData?.data.roles.includes(UserRoles.TEACHER) ? (
+        <Button>
+          <Link href={`/projects/edit/${id}`}>Edit</Link>
+        </Button>
+      ) : null}
       {parsedData.map(({ type, data }, index) => {
         switch (type) {
           case "GuessTheAnimal": {

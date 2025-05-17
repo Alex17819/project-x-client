@@ -13,4 +13,9 @@ export class ProjectsApi {
       blocks: JSON.stringify(data),
     });
   }
+  static async updateProject(id: number, data: Record<string, any>) {
+    return await api.put(`${API_ROUTES.projects}/${id}`, {
+      blocks: JSON.stringify(data),
+    });
+  }
 }

@@ -14,8 +14,10 @@ import { ProjectsApi } from "@/api/projects";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/api/axios";
+import { useRouter } from "next/navigation";
+import { UserRoles } from "@/types/user";
 
-type GameType =
+export type GameType =
   | "GuessTheAnimal"
   | "MatchColors"
   | "MatchQuantity"
@@ -36,6 +38,9 @@ const gameNames: GameType[] = [
 ];
 
 export default function CreateProjectPage() {
+  const [games, setGames] = useState<Game[]>([]);
+  const router = useRouter();
+
   const { data: user, isLoading } = useQuery({
     queryKey: ["USER_GET"],
     queryFn: async () => {
@@ -45,7 +50,12 @@ export default function CreateProjectPage() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const [games, setGames] = useState<Game[]>([]);
+  if (isLoading) return <div>Loading...</div>;
+  if (!user?.data.roles.includes(UserRoles.TEACHER)) {
+    toast.error("You do not have rights to create project");
+    router.push("/dashboard");
+    return;
+  }
 
   const addGame = (type: GameType) => {
     setGames((prevState) => [...prevState, { type }]);
@@ -68,7 +78,8 @@ export default function CreateProjectPage() {
       return;
     }
     try {
-      await ProjectsApi.saveProject(games);
+      const response = await ProjectsApi.saveProject(games);
+      router.push(`/projects/edit/${response?.data.id}`);
       toast.success("Project saved successfully");
     } catch (error) {}
   };
@@ -95,6 +106,7 @@ export default function CreateProjectPage() {
                 <GuessTheAnimal
                   key={`${type}-${index}`}
                   onDataChange={(data) => handleDataChange(index, data)}
+                  isEditable
                 />
               );
             }

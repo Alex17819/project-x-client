@@ -20,9 +20,14 @@ interface Props {
     answer?: string;
     finalAnswer?: string[];
   };
+  isEditable?: boolean;
 }
 
-export const GuessTheAnimal = ({ onDataChange, data }: Props) => {
+export const GuessTheAnimal = ({
+  onDataChange,
+  data,
+  isEditable = false,
+}: Props) => {
   const [answer, setAnswer] = useState("");
   const [finalAnswer, setFinalAnswer] = useState<string[]>([]);
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
@@ -68,10 +73,10 @@ export const GuessTheAnimal = ({ onDataChange, data }: Props) => {
             width={700}
             height={700}
             className={clsx({
-              "cursor-pointer": roles.includes("TEACHER"),
+              "cursor-pointer": isEditable && roles.includes("TEACHER"),
             })}
             onClick={() => {
-              if (!roles.includes("TEACHER")) return;
+              if (!roles.includes("TEACHER") || !isEditable) return;
               setIsGalleryModalOpen(true);
             }}
           />
@@ -82,17 +87,17 @@ export const GuessTheAnimal = ({ onDataChange, data }: Props) => {
             width={700}
             height={700}
             className={clsx({
-              "cursor-pointer": roles.includes("TEACHER"),
+              "cursor-pointer": isEditable && roles.includes("TEACHER"),
             })}
             onClick={() => {
-              if (!roles.includes("TEACHER")) return;
+              if (!roles.includes("TEACHER") || !isEditable) return;
               setIsGalleryModalOpen(true);
             }}
           />
         )}
       </div>
       <div className="p-2 flex w-full justify-center gap-x-2">
-        {isPreview || !roles.includes("TEACHER") ? (
+        {isPreview || !isEditable || !roles.includes("TEACHER") ? (
           [...Array(answer.length)].map((_, index) => (
             <input
               ref={(el) => {
@@ -119,13 +124,13 @@ export const GuessTheAnimal = ({ onDataChange, data }: Props) => {
                   answer: e.target.value,
                 });
               }}
-              placeholder="Enter your asnwer"
+              placeholder="Enter your answer"
               className="w-full"
             />
           </div>
         )}
       </div>
-      {roles.includes("TEACHER") ? (
+      {roles.includes("TEACHER") && isEditable ? (
         <Button
           onClick={() => setIsPreview(!isPreview)}
           disabled={!img || !answer}

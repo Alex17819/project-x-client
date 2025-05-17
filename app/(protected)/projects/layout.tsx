@@ -5,5 +5,5 @@ export default async function ProjectsLayout({
 }: {
   children: ReactNode;
 }) {
-  return <div className="">{children}</div>;
+  return <div className="pb-50">{children}</div>;
 }
