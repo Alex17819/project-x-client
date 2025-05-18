@@ -112,19 +112,21 @@ export default function ProjectsPage() {
       <div className="loader" />
     </div>
   ) : (
-    <div className="mt-2 space-y-2">
-      <Button className="w-content">
-        <Link href={`/projects/view/${id}`}>View</Link>
-      </Button>
-      <div className="flex justify-between">
-        <div className="space-x-1">
-          {gameNames.map((gameName) => (
-            <Button key={gameName} onClick={() => addGame(gameName)}>
-              {gameName}
-            </Button>
-          ))}
+    <div className="space-y-2">
+      <div className="sticky space-y-2 z-20 bg-[#ECEEF0] top-0 py-2 border-b border-b-black">
+        <Button>
+          <Link href={`/projects/view/${id}`}>View</Link>
+        </Button>
+        <div className="flex justify-between">
+          <div className="space-x-1">
+            {gameNames.map((gameName) => (
+              <Button key={gameName} onClick={() => addGame(gameName)}>
+                {gameName}
+              </Button>
+            ))}
+          </div>
+          <Button onClick={saveProject}>Save</Button>
         </div>
-        <Button onClick={saveProject}>Save</Button>
       </div>
       {parsedData.map(({ type, data, id }, index) => {
         switch (type) {

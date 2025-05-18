@@ -91,6 +91,17 @@ export const MemoryCards = ({
     setSelected(updatedState);
   };
 
+  const toggleAllMatched = () => {
+    const allMatched = state.every((row) =>
+      row.every((item) => item.isMatched)
+    );
+    const updatedState = state.map((row) =>
+      row.map((item) => ({ ...item, isMatched: !allMatched }))
+    );
+    setState(updatedState);
+    onDataChange?.({ state: updatedState });
+  };
+
   return (
     <div className="flex flex-col items-center gap-y-2">
       {state.map((row, rowIndex) => {
@@ -137,6 +148,7 @@ export const MemoryCards = ({
           <Button onClick={() => setState(generateMatrix(4, 4))}>
             Shuffle the cards
           </Button>
+          <Button onClick={toggleAllMatched}>Set all matched</Button>
         </>
       ) : null}
     </div>
