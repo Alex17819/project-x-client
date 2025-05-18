@@ -173,6 +173,7 @@ export default function ProjectsPage() {
                   data={data}
                   roles={roles}
                   onDataChange={(data) => handleDataChange(index, data)}
+                  isPdfGenerating={isPdfGenerating}
                 />
               );
             }

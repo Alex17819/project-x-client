@@ -16,13 +16,15 @@ interface Props {
   };
   isEditable?: boolean;
   roles?: UserRoles[];
+  isPdfGenerating?: boolean;
 }
 
 export const MemoryCards = ({
   onDataChange,
   data,
-  isEditable,
+  isEditable = false,
   roles,
+  isPdfGenerating = false,
 }: Props) => {
   const [state, setState] = useState<{ value: number; isMatched: boolean }[][]>(
     []
@@ -124,7 +126,7 @@ export const MemoryCards = ({
                   className={clsx(
                     "size-10 flex justify-center items-center border cursor-pointer bg-black transition-colors duration-500 select-none",
                     {
-                      "bg-white": showCard || isSelected,
+                      "bg-white": isPdfGenerating || showCard || isSelected,
                     }
                   )}
                   onClick={
@@ -133,7 +135,7 @@ export const MemoryCards = ({
                       : () => handleChange(rowIndex, itemIndex)
                   }
                 >
-                  {showCard || isSelected ? item.value : ""}
+                  {isPdfGenerating || showCard || isSelected ? item.value : ""}
                 </li>
               );
             })}
