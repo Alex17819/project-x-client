@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { api } from "@/api/axios";
 import { useQuery } from "@tanstack/react-query";
 import { ProjectsApi } from "@/api/projects";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { UserRoles } from "@/types/user";
 
 export default function DashboardPage() {
   const { data, isLoading } = useQuery({
@@ -17,15 +16,22 @@ export default function DashboardPage() {
     },
   });
 
-  console.log(data);
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ["USER_GET"],
+    queryFn: async () => {
+      return await api.get("/user");
+    },
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  return isLoading ? (
+  return isLoading || isUserLoading ? (
     <div className="size-full flex justify-center items-center">
       <div className="loader" />
     </div>
   ) : (
     <>
-      {!data.length ? (
+      {!data?.length && user?.data.roles.includes(UserRoles.TEACHER) ? (
         <h2>
           You do not have any project.{" "}
           <Link className="text-blue-400" href="/projects/create">
@@ -38,7 +44,7 @@ export default function DashboardPage() {
           <div>
             <h2>Your projects</h2>
             <div className="mt-2 flex gap-x-2">
-              {data.map(({ id }) => (
+              {data?.map(({ id }) => (
                 <Link
                   href={`/projects/view/${id}`}
                   key={id}
@@ -50,9 +56,11 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <Button className="h-10">
-            <Link href="/projects/create">Create new</Link>
-          </Button>
+          {user?.data.roles.includes(UserRoles.TEACHER) ? (
+            <Button className="h-10">
+              <Link href="/projects/create">Create new</Link>
+            </Button>
+          ) : null}
         </div>
       )}
     </>

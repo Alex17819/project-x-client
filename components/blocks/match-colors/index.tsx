@@ -5,8 +5,7 @@ import Image from "next/image";
 import { Modal } from "@/components/modals/modal";
 import { HexColorPicker } from "react-colorful";
 import { toast } from "react-toastify";
-
-const roles = ["USER", "TEACHER"];
+import { UserRoles } from "@/types/user";
 
 interface Line {
   x1: number;
@@ -33,12 +32,14 @@ interface Props {
     columns?: Columns;
   };
   isEditable?: boolean;
+  roles?: UserRoles[];
 }
 
 export const MatchColors = ({
   onDataChange,
   data,
   isEditable = false,
+  roles,
 }: Props) => {
   const [columns, setColumns] = useState<Columns>({
     colors: [null],
@@ -115,52 +116,46 @@ export const MatchColors = ({
   }, [matches]);
 
   const handleChoose = (type: "color" | "image", value: string) => {
-    setSelected((prev) => {
-      const newSelected = {
-        ...prev,
-        [type]: prev[type] === value ? null : value,
-      };
-      if (newSelected.color && newSelected.image) {
-        setMatches((prevMatches) => {
-          const updatedMatches = { ...prevMatches };
+    const newSelected = {
+      ...selected,
+      [type]: selected[type] === value ? null : value,
+    };
+    if (newSelected.color && newSelected.image) {
+      const updatedMatches = { ...matches };
 
-          Object.entries(prevMatches).forEach(([color, image]) => {
-            if (color === newSelected.color || image === newSelected.image) {
-              delete updatedMatches[color];
-            }
-          });
+      Object.entries(matches).forEach(([color, image]) => {
+        if (color === newSelected.color || image === newSelected.image) {
+          delete updatedMatches[color];
+        }
+      });
 
-          updatedMatches[newSelected.color!] = newSelected.image!;
-          onDataChange?.({
-            matches: updatedMatches,
-          });
-          return updatedMatches;
-        });
-        return { color: null, image: null };
-      }
-
-      return newSelected;
-    });
+      updatedMatches[newSelected.color!] = newSelected.image!;
+      onDataChange?.({
+        matches: updatedMatches,
+      });
+      setMatches(updatedMatches);
+      setSelected({ color: null, image: null });
+      return;
+    }
+    setSelected(newSelected);
   };
 
   const addRow = () => {
-    setColumns((prevState) => {
-      const newRows = {
-        colors: [...prevState.colors, null],
-        images: [...prevState.images, null],
-      };
-      onDataChange?.({
-        columns: newRows,
-      });
-      return newRows;
+    const newRows = {
+      colors: [...columns.colors, null],
+      images: [...columns.images, null],
+    };
+    onDataChange?.({
+      columns: newRows,
     });
+    setColumns(newRows);
   };
 
   const chooseColor = (
     index: number,
     color: string | undefined = undefined
   ) => {
-    if (!roles.includes("TEACHER")) return;
+    if (!roles?.includes(UserRoles.TEACHER)) return;
     if (color) setColorPickerColor(color);
 
     setColorIndexToChange(index);
@@ -176,7 +171,7 @@ export const MatchColors = ({
   };
 
   const chooseImage = (index: number) => {
-    if (!roles.includes("TEACHER")) return;
+    if (!roles?.includes(UserRoles.TEACHER)) return;
 
     setImageIndexToChange(index);
     setIsGalleryModalOpen(true);
@@ -311,7 +306,7 @@ export const MatchColors = ({
                   chooseColor(index);
                 }}
               >
-                {roles.includes("TEACHER") && isEditable ? (
+                {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                   <span
                     className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
                     onClick={(e) => {
@@ -349,7 +344,7 @@ export const MatchColors = ({
               }}
               onClick={() => handleChoose("color", color)}
             >
-              {roles.includes("TEACHER") && isEditable ? (
+              {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                 <span
                   className="opacity-0 transition-all group-hover:opacity-100 absolute top-[20px] -right-[22px]"
                   onClick={(e) => {
@@ -366,7 +361,7 @@ export const MatchColors = ({
                   />
                 </span>
               ) : null}
-              {roles.includes("TEACHER") && isEditable ? (
+              {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                 <span
                   className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
                   onClick={() => deleteRow(index)}
@@ -377,7 +372,7 @@ export const MatchColors = ({
             </li>
           );
         })}
-        {roles.includes("TEACHER") &&
+        {roles?.includes(UserRoles.TEACHER) &&
         isEditable &&
         columns.colors.length < 5 ? (
           <li
@@ -400,7 +395,7 @@ export const MatchColors = ({
                   chooseImage(index);
                 }}
               >
-                {roles.includes("TEACHER") && isEditable ? (
+                {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                   <span
                     className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
                     onClick={(e) => {
@@ -448,7 +443,7 @@ export const MatchColors = ({
                 }}
                 className="size-full object-cover"
               />
-              {roles.includes("TEACHER") && isEditable ? (
+              {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                 <span
                   className="absolute top-0 -right-[20px] opacity-0 transition-all group-hover:opacity-100"
                   onClick={() => deleteRow(index)}
@@ -456,7 +451,7 @@ export const MatchColors = ({
                   &#x2715;
                 </span>
               ) : null}
-              {roles.includes("TEACHER") && isEditable ? (
+              {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                 <span
                   className="text-white opacity-0 transition-all group-hover:opacity-100 absolute top-[20px] -right-[22px]"
                   onClick={(e) => {
@@ -476,7 +471,7 @@ export const MatchColors = ({
             </li>
           );
         })}
-        {roles.includes("TEACHER") &&
+        {roles?.includes(UserRoles.TEACHER) &&
         isEditable &&
         columns.images.length < 5 ? (
           <li

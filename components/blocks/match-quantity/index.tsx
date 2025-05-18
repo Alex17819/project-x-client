@@ -8,8 +8,7 @@ import { clsx } from "clsx";
 
 import { Modal } from "@/components/modals/modal";
 import { nanoid } from "nanoid";
-
-const roles: ("USER" | "TEACHER")[] = ["USER", "TEACHER"];
+import { UserRoles } from "@/types/user";
 
 interface Line {
   x1: number;
@@ -35,9 +34,15 @@ interface Props {
     state?: State;
   };
   isEditable?: boolean;
+  roles?: UserRoles[];
 }
 
-export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
+export const MatchQuantity = ({
+  onDataChange,
+  data,
+  isEditable = false,
+  roles,
+}: Props) => {
   const [state, setState] = useState<State>({
     images: [null],
     numbers: [
@@ -104,53 +109,48 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
   }, [matches]);
 
   const handleSelect = (type: "image" | "number", value: string) => {
-    setSelected((prevState) => {
-      const newSelected = {
-        ...prevState,
-        [type]: prevState[type] === value ? null : value,
-      };
+    const newSelected = {
+      ...selected,
+      [type]: selected[type] === value ? null : value,
+    };
 
-      if (newSelected.image !== null && newSelected.number !== null) {
-        setMatches((prevMatches) => {
-          const updatedMatches = { ...prevMatches };
+    if (newSelected.image !== null && newSelected.number !== null) {
+      const updatedMatches = { ...matches };
 
-          Object.entries(prevMatches).forEach(([image, number]) => {
-            if (image === newSelected.image || number === newSelected.number) {
-              delete updatedMatches[image];
-            }
-          });
+      Object.entries(matches).forEach(([image, number]) => {
+        if (image === newSelected.image || number === newSelected.number) {
+          delete updatedMatches[image];
+        }
+      });
 
-          updatedMatches[newSelected.image!] = newSelected.number!;
-          onDataChange?.({
-            matches: updatedMatches,
-          });
-          return updatedMatches;
-        });
+      updatedMatches[newSelected.image!] = newSelected.number!;
+      onDataChange?.({
+        matches: updatedMatches,
+      });
+      setMatches(updatedMatches);
 
-        return { image: null, number: null };
-      }
+      setSelected({ image: null, number: null });
+      return;
+    }
 
-      return newSelected;
-    });
+    setSelected(newSelected);
   };
 
   const addRow = () => {
-    setState((prevState) => {
-      const newRow = {
-        images: [...prevState.images, null],
-        numbers: [
-          ...prevState.numbers,
-          {
-            value: 0,
-            id: nanoid(),
-          },
-        ],
-      };
-      onDataChange?.({
-        state: newRow,
-      });
-      return newRow;
+    const newRow = {
+      images: [...state.images, null],
+      numbers: [
+        ...state.numbers,
+        {
+          value: 0,
+          id: nanoid(),
+        },
+      ],
+    };
+    onDataChange?.({
+      state: newRow,
     });
+    setState(newRow);
   };
 
   const openGalleryModal = (index: number) => {
@@ -160,19 +160,16 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
 
   const onChange = (index: number, value: string) => {
     const newValue = value === "" ? null : Number(value);
-
-    setState((prevState) => {
-      const newState = {
-        ...prevState,
-        numbers: prevState.numbers.map((number, numberIndex) =>
-          numberIndex === index ? { ...number, value: newValue } : { ...number }
-        ),
-      };
-      onDataChange?.({
-        state: newState,
-      });
-      return newState;
+    const newState = {
+      ...state,
+      numbers: state.numbers.map((number, numberIndex) =>
+        numberIndex === index ? { ...number, value: newValue } : { ...number }
+      ),
+    };
+    onDataChange?.({
+      state: newState,
     });
+    setState(newState);
   };
 
   useEffect(() => {
@@ -185,21 +182,18 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
 
     if (img === "" || imageIndexToChange === null) return;
 
-    setState((prevState) => {
-      const newState = {
-        ...prevState,
-        images: prevState.images.map((image, index) => {
-          if (imageIndexToChange === index) {
-            return img;
-          }
+    const newState = {
+      ...state,
+      images: state.images.map((image, index) => {
+        if (imageIndexToChange === index) {
+          return img;
+        }
 
-          return image;
-        }),
-      };
-      onDataChange?.({ state: newState });
-      return newState;
-    });
-
+        return image;
+      }),
+    };
+    onDataChange?.({ state: newState });
+    setState(newState);
     setImg("");
     setImageIndexToChange(null);
   }, [img, imageIndexToChange, state.images]);
@@ -286,7 +280,7 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
                   height={80}
                   alt="animals"
                 />
-                {roles.includes("TEACHER") && isEditable ? (
+                {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                   <span
                     className="absolute top-0 -right-[20px] text-black opacity-0 transition-all group-hover:opacity-100"
                     onClick={(e) => {
@@ -322,7 +316,7 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
                 height={80}
                 alt="animals"
               />
-              {roles.includes("TEACHER") && isEditable ? (
+              {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                 <span
                   className="absolute top-0 -right-[20px] text-black opacity-0 transition-all group-hover:opacity-100"
                   onClick={(e) => {
@@ -333,7 +327,7 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
                   &#x2715;
                 </span>
               ) : null}
-              {roles.includes("TEACHER") && isEditable ? (
+              {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                 <span
                   className="opacity-0 transition-all group-hover:opacity-100 absolute top-[20px] -right-[22px]"
                   onClick={(e) => {
@@ -353,7 +347,9 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
             </li>
           );
         })}
-        {roles.includes("TEACHER") && isEditable && state.images.length < 5 ? (
+        {roles?.includes(UserRoles.TEACHER) &&
+        isEditable &&
+        state.images.length < 5 ? (
           <li
             className="bg-black/30 size-20 rounded-full cursor-pointer text-[40px] text-white flex justify-center items-center"
             onClick={addRow}
@@ -371,14 +367,14 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
               }}
               key={index}
               className={clsx(
-                "cursor-pointer size-20 rounded-full border-2 flex justify-center items-center group relative text-3xl",
+                "cursor-pointer size-20 rounded-full border-2 flex justify-center items-center group relative",
                 {
                   "border-blue-500": selected.number === number.id,
                 }
               )}
               onClick={() => handleSelect("number", number.id)}
             >
-              {roles.includes("TEACHER") && isEditable ? (
+              {roles?.includes(UserRoles.TEACHER) && isEditable ? (
                 <>
                   <input
                     ref={(el) => {
@@ -432,12 +428,14 @@ export const MatchQuantity = ({ onDataChange, data, isEditable }: Props) => {
                   </span>
                 </>
               ) : (
-                number.value
+                <span className="text-3xl">{number.value}</span>
               )}
             </li>
           );
         })}
-        {roles.includes("TEACHER") && isEditable && state.numbers.length < 5 ? (
+        {roles?.includes(UserRoles.TEACHER) &&
+        isEditable &&
+        state.numbers.length < 5 ? (
           <li
             className="bg-black/30 size-20 rounded-full cursor-pointer text-[40px] text-white flex justify-center items-center"
             onClick={addRow}

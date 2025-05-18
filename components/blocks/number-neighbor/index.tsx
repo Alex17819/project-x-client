@@ -39,65 +39,59 @@ export const NumberNeighbor = ({
     inputIndex: number;
     value: string;
   }) => {
-    setState((prevState) => {
-      const newState = prevState.map((column, indexColumn) => {
-        if (indexColumn === columnIndex) {
-          return column.map((row, indexRow) => {
-            if (rowIndex === indexRow) {
-              if (value.length > 2) {
-                return row;
-              }
-              if (inputIndex === 0) {
-                return [value === "" ? null : Number(value), row[1], row[2]];
-              }
-              if (inputIndex === 2) {
-                return [row[0], row[1], value === "" ? null : Number(value)];
-              }
-              if (
-                inputIndex === 1 &&
-                roles?.includes(UserRoles.TEACHER) &&
-                isEditable
-              ) {
-                return [row[0], value === "" ? null : Number(value), row[2]];
-              }
+    const newState = state.map((column, indexColumn) => {
+      if (indexColumn === columnIndex) {
+        return column.map((row, indexRow) => {
+          if (rowIndex === indexRow) {
+            if (value.length > 2) {
+              return row;
             }
+            if (inputIndex === 0) {
+              return [value === "" ? null : Number(value), row[1], row[2]];
+            }
+            if (inputIndex === 2) {
+              return [row[0], row[1], value === "" ? null : Number(value)];
+            }
+            if (
+              inputIndex === 1 &&
+              roles?.includes(UserRoles.TEACHER) &&
+              isEditable
+            ) {
+              return [row[0], value === "" ? null : Number(value), row[2]];
+            }
+          }
 
-            return row;
-          });
-        }
+          return row;
+        });
+      }
 
-        return column;
-      });
-      onDataChange?.({
-        state: newState,
-      });
-      return newState;
+      return column;
     });
+    onDataChange?.({
+      state: newState,
+    });
+    setState(newState);
   };
 
   const addRow = (columnIndex: number) => {
-    setState((prevState) => {
-      const newState = prevState.map((column, index) => {
-        if (columnIndex === index) {
-          return [...column, [null, null, null]];
-        }
-        return column;
-      });
-      onDataChange?.({
-        state: newState,
-      });
-      return newState;
+    const newState = state.map((column, index) => {
+      if (columnIndex === index) {
+        return [...column, [null, null, null]];
+      }
+      return column;
     });
+    onDataChange?.({
+      state: newState,
+    });
+    setState(newState);
   };
 
   const addColumn = () => {
-    setState((prevState) => {
-      const newState = [...prevState, [[null, null, null]]];
-      onDataChange?.({
-        state: newState,
-      });
-      return newState;
+    const newState = [...state, [[null, null, null]]];
+    onDataChange?.({
+      state: newState,
     });
+    setState(newState);
   };
 
   const deleteItem = ({
@@ -107,20 +101,18 @@ export const NumberNeighbor = ({
     columnIndex: number;
     rowIndex: number;
   }) => {
-    setState((prevState) => {
-      const newState = prevState.map((column, indexColumn) => {
-        if (indexColumn === columnIndex) {
-          return column.filter((_, indexRow) => indexRow !== rowIndex);
-        }
-        return column;
-      });
-      const cleanedState = newState.filter((column) => column.length > 0);
-      if (cleanedState.length === 0) return prevState;
-      onDataChange?.({
-        state: cleanedState,
-      });
-      return cleanedState;
+    const newState = state.map((column, indexColumn) => {
+      if (indexColumn === columnIndex) {
+        return column.filter((_, indexRow) => indexRow !== rowIndex);
+      }
+      return column;
     });
+    const cleanedState = newState.filter((column) => column.length > 0);
+    if (cleanedState.length === 0) return state;
+    onDataChange?.({
+      state: cleanedState,
+    });
+    setState(cleanedState);
   };
 
   return (

@@ -3,7 +3,7 @@ import { API_ROUTES } from "@/api/routes";
 
 export class ProjectsApi {
   static async getProjects() {
-    return await api.get(API_ROUTES.projects);
+    return await api.get<{ id: number }[]>(API_ROUTES.projects);
   }
   static async getProjectData(id: number) {
     return await api.get(`${API_ROUTES.projects}/${id}`);

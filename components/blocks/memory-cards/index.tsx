@@ -1,12 +1,11 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { clsx } from "clsx";
 
 import { generateMatrix } from "@/utils";
 import { Button } from "@/components/ui/button";
-
-const roles: ("USER" | "TEACHER")[] = ["USER", "TEACHER"];
+import { UserRoles } from "@/types/user";
 
 interface Props {
   onDataChange?: (data: {
@@ -16,9 +15,15 @@ interface Props {
     state?: { value: number; isMatched: boolean }[][];
   };
   isEditable?: boolean;
+  roles?: UserRoles[];
 }
 
-export const MemoryCards = ({ onDataChange, data, isEditable }: Props) => {
+export const MemoryCards = ({
+  onDataChange,
+  data,
+  isEditable,
+  roles,
+}: Props) => {
   const [state, setState] = useState<{ value: number; isMatched: boolean }[][]>(
     []
   );
@@ -42,49 +47,48 @@ export const MemoryCards = ({ onDataChange, data, isEditable }: Props) => {
   }, [data]);
 
   const handleChange = (rowIndex: number, itemIndex: number) => {
-    setSelected((prevState) => {
-      const updatedState = prevState.map((row) => [...row]);
+    const updatedState = selected.map((row) => [...row]);
 
-      if (prevState[0].every((item) => item === null)) {
-        updatedState[0][0] = rowIndex;
-        updatedState[0][1] = itemIndex;
-        return updatedState;
+    if (selected[0].every((item) => item === null)) {
+      updatedState[0][0] = rowIndex;
+      updatedState[0][1] = itemIndex;
+      setSelected(updatedState);
+      return;
+    } else {
+      setIsBlocked(true);
+      updatedState[1][0] = rowIndex;
+      updatedState[1][1] = itemIndex;
+
+      if (
+        state[updatedState[0][0]!][updatedState[0][1]!].value ===
+        state[updatedState[1][0]!][updatedState[1][1]!].value
+      ) {
+        const newState = state.map((row) => [...row]);
+        newState[updatedState[0][0]!][updatedState[0][1]!].isMatched = true;
+        newState[updatedState[1][0]!][updatedState[1][1]!].isMatched = true;
+        setState(newState);
+        onDataChange?.({
+          state: newState,
+        });
+        setTimeout(() => {
+          setSelected([
+            [null, null],
+            [null, null],
+          ]);
+          setIsBlocked(false);
+        }, 500);
       } else {
-        setIsBlocked(true);
-        updatedState[1][0] = rowIndex;
-        updatedState[1][1] = itemIndex;
-
-        if (
-          state[updatedState[0][0]!][updatedState[0][1]!].value ===
-          state[updatedState[1][0]!][updatedState[1][1]!].value
-        ) {
-          const newState = state.map((row) => [...row]);
-          newState[updatedState[0][0]!][updatedState[0][1]!].isMatched = true;
-          newState[updatedState[1][0]!][updatedState[1][1]!].isMatched = true;
-          setState(newState);
-          onDataChange?.({
-            state: newState,
-          });
-          setTimeout(() => {
-            setSelected([
-              [null, null],
-              [null, null],
-            ]);
-            setIsBlocked(false);
-          }, 500);
-        } else {
-          setTimeout(() => {
-            setSelected([
-              [null, null],
-              [null, null],
-            ]);
-            setIsBlocked(false);
-          }, 1000);
-        }
+        setTimeout(() => {
+          setSelected([
+            [null, null],
+            [null, null],
+          ]);
+          setIsBlocked(false);
+        }, 1000);
       }
+    }
 
-      return updatedState;
-    });
+    setSelected(updatedState);
   };
 
   return (
@@ -101,7 +105,7 @@ export const MemoryCards = ({ onDataChange, data, isEditable }: Props) => {
                 (selected[1][0] === rowIndex && selected[1][1] === itemIndex);
 
               const showCard =
-                isVisible && roles.includes("TEACHER") && isEditable;
+                isVisible && roles?.includes(UserRoles.TEACHER) && isEditable;
 
               return (
                 <li
@@ -125,7 +129,7 @@ export const MemoryCards = ({ onDataChange, data, isEditable }: Props) => {
           </ul>
         );
       })}
-      {roles.includes("TEACHER") && isEditable ? (
+      {roles?.includes(UserRoles.TEACHER) && isEditable ? (
         <>
           <Button onClick={() => setIsVisible((prevState) => !prevState)}>
             {isVisible ? "Hide" : "Show"} all values

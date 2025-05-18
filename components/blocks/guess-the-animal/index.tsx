@@ -6,8 +6,7 @@ import { Modal } from "@/components/modals/modal";
 import { clsx } from "clsx";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-const roles = ["USER", "TEACHER"];
+import { UserRoles } from "@/types/user";
 
 interface Props {
   onDataChange?: (data: {
@@ -21,12 +20,14 @@ interface Props {
     finalAnswer?: string[];
   };
   isEditable?: boolean;
+  roles?: UserRoles[];
 }
 
 export const GuessTheAnimal = ({
   onDataChange,
   data,
   isEditable = false,
+  roles,
 }: Props) => {
   const [answer, setAnswer] = useState("");
   const [finalAnswer, setFinalAnswer] = useState<string[]>([]);
@@ -73,10 +74,11 @@ export const GuessTheAnimal = ({
             width={700}
             height={700}
             className={clsx({
-              "cursor-pointer": isEditable && roles.includes("TEACHER"),
+              "cursor-pointer":
+                isEditable && roles?.includes(UserRoles.TEACHER),
             })}
             onClick={() => {
-              if (!roles.includes("TEACHER") || !isEditable) return;
+              if (!roles?.includes(UserRoles.TEACHER) || !isEditable) return;
               setIsGalleryModalOpen(true);
             }}
           />
@@ -87,17 +89,18 @@ export const GuessTheAnimal = ({
             width={700}
             height={700}
             className={clsx({
-              "cursor-pointer": isEditable && roles.includes("TEACHER"),
+              "cursor-pointer":
+                isEditable && roles?.includes(UserRoles.TEACHER),
             })}
             onClick={() => {
-              if (!roles.includes("TEACHER") || !isEditable) return;
+              if (!roles?.includes(UserRoles.TEACHER) || !isEditable) return;
               setIsGalleryModalOpen(true);
             }}
           />
         )}
       </div>
       <div className="p-2 flex w-full justify-center gap-x-2">
-        {isPreview || !isEditable || !roles.includes("TEACHER") ? (
+        {isPreview || !isEditable || !roles?.includes(UserRoles.TEACHER) ? (
           [...Array(answer.length)].map((_, index) => (
             <input
               ref={(el) => {
@@ -130,7 +133,7 @@ export const GuessTheAnimal = ({
           </div>
         )}
       </div>
-      {roles.includes("TEACHER") && isEditable ? (
+      {roles?.includes(UserRoles.TEACHER) && isEditable ? (
         <Button
           onClick={() => setIsPreview(!isPreview)}
           disabled={!img || !answer}

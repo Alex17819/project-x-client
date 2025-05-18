@@ -37,37 +37,48 @@ export const Header = () => {
   });
 
   return (
-    <header className="bg-[#3E53A0] px-[5%] text-white flex items-center justify-between py-5">
-      <Link href="/blocks">
-        <h1 className="text-[20px] font-bold hover:text-[#CCD4DE] transition-colors">
-          Project-X
-        </h1>
-      </Link>
-      <div>
-        <ul className="flex gap-x-4">
-          {menu.map((item, index) => {
-            if (item.isAuth && !user?.data) return;
+    <header className="bg-[#3E53A0] text-white py-5">
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between w-full px-[5%]">
+        <Link href="/blocks">
+          <h1 className="text-[20px] font-bold hover:text-[#CCD4DE] transition-colors">
+            Project-X
+          </h1>
+        </Link>
+        <div>
+          <ul className="flex gap-x-4">
+            {menu.map((item, index) => {
+              if (item.isAuth && !user?.data) return;
 
-            if (item.link === "/register" && user?.data) {
-              return (
-                <li
-                  key={index}
-                  className="hover:text-[#CCD4DE] transition-colors cursor-pointer"
-                  onClick={async () => {
-                    await api.post("/auth/logout");
-                    queryClient.removeQueries({
-                      queryKey: ["USER_GET"],
-                    });
-                    router.replace("/login");
-                    await refetch();
-                  }}
-                >
-                  Logout
-                </li>
-              );
-            }
+              if (item.link === "/register" && user?.data) {
+                return (
+                  <li
+                    key={index}
+                    className="hover:text-[#CCD4DE] transition-colors cursor-pointer"
+                    onClick={async () => {
+                      await api.post("/auth/logout");
+                      queryClient.removeQueries({
+                        queryKey: ["USER_GET"],
+                      });
+                      router.replace("/login");
+                      await refetch();
+                    }}
+                  >
+                    Logout
+                  </li>
+                );
+              }
 
-            if (item.isAuth && user?.data) {
+              if (item.isAuth && user?.data) {
+                return (
+                  <li
+                    key={index}
+                    className="hover:text-[#CCD4DE] transition-colors"
+                  >
+                    <Link href={item.link}>{item.title}</Link>
+                  </li>
+                );
+              }
+
               return (
                 <li
                   key={index}
@@ -76,18 +87,9 @@ export const Header = () => {
                   <Link href={item.link}>{item.title}</Link>
                 </li>
               );
-            }
-
-            return (
-              <li
-                key={index}
-                className="hover:text-[#CCD4DE] transition-colors"
-              >
-                <Link href={item.link}>{item.title}</Link>
-              </li>
-            );
-          })}
-        </ul>
+            })}
+          </ul>
+        </div>
       </div>
     </header>
   );

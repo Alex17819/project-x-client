@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/api/axios";
 import { useRouter } from "next/navigation";
 import { UserRoles } from "@/types/user";
+import { nanoid } from "nanoid";
 
 export type GameType =
   | "GuessTheAnimal"
@@ -27,6 +28,7 @@ export type GameType =
 export interface Game {
   type: GameType;
   data?: Record<string, any>;
+  id: string;
 }
 
 const gameNames: GameType[] = [
@@ -58,7 +60,7 @@ export default function CreateProjectPage() {
   }
 
   const addGame = (type: GameType) => {
-    setGames((prevState) => [...prevState, { type }]);
+    setGames((prevState) => [...prevState, { type, id: nanoid() }]);
   };
 
   const handleDataChange = (index: number, newData: Record<string, any>) => {
@@ -84,8 +86,13 @@ export default function CreateProjectPage() {
     } catch (error) {}
   };
 
+  const deleteGame = (gameId: string) => {
+    const newGames = games.filter(({ id }) => gameId !== id);
+    setGames(newGames);
+  };
+
   return (
-    <div>
+    <div className="mt-2 space-y-2">
       {!games.length ? <h2>Add the first game</h2> : null}
       <div className="flex justify-between">
         <div className="space-x-1">
@@ -99,48 +106,91 @@ export default function CreateProjectPage() {
       </div>
 
       <div className="flex flex-col gap-y-4">
-        {games.map(({ type }, index) => {
+        {games.map(({ type, id }, index) => {
           switch (type) {
             case "GuessTheAnimal": {
               return (
-                <GuessTheAnimal
-                  key={`${type}-${index}`}
-                  onDataChange={(data) => handleDataChange(index, data)}
-                  isEditable
-                />
+                <div className="relative" key={`${type}-${id}`}>
+                  <div
+                    className="absolute top-0 -left-6 cursor-pointer"
+                    onClick={() => deleteGame(id)}
+                  >
+                    &#x2715;
+                  </div>
+                  <GuessTheAnimal
+                    onDataChange={(data) => handleDataChange(index, data)}
+                    isEditable
+                    roles={user?.data.roles}
+                  />
+                </div>
               );
             }
             case "MatchColors": {
               return (
-                <MatchColors
-                  key={`${type}-${index}`}
-                  onDataChange={(data) => handleDataChange(index, data)}
-                />
+                <div className="relative" key={`${type}-${id}`}>
+                  <div
+                    className="absolute top-0 -left-6 cursor-pointer"
+                    onClick={() => deleteGame(id)}
+                  >
+                    &#x2715;
+                  </div>
+                  <MatchColors
+                    onDataChange={(data) => handleDataChange(index, data)}
+                    isEditable
+                    roles={user?.data.roles}
+                  />
+                </div>
               );
             }
             case "MatchQuantity": {
               return (
-                <MatchQuantity
-                  key={`${type}-${index}`}
-                  onDataChange={(data) => handleDataChange(index, data)}
-                />
+                <div className="relative" key={`${type}-${id}`}>
+                  <div
+                    className="absolute top-0 -left-6 cursor-pointer"
+                    onClick={() => deleteGame(id)}
+                  >
+                    &#x2715;
+                  </div>
+                  <MatchQuantity
+                    onDataChange={(data) => handleDataChange(index, data)}
+                    isEditable
+                    roles={user?.data.roles}
+                  />
+                </div>
               );
             }
             case "MemoryCards": {
               return (
-                <MemoryCards
-                  key={`${type}-${index}`}
-                  onDataChange={(data) => handleDataChange(index, data)}
-                />
+                <div className="relative" key={`${type}-${id}`}>
+                  <div
+                    className="absolute top-0 -left-6 cursor-pointer"
+                    onClick={() => deleteGame(id)}
+                  >
+                    &#x2715;
+                  </div>
+                  <MemoryCards
+                    onDataChange={(data) => handleDataChange(index, data)}
+                    isEditable
+                    roles={user?.data.roles}
+                  />
+                </div>
               );
             }
             case "NumberNeighbor": {
               return (
-                <NumberNeighbor
-                  key={`${type}-${index}`}
-                  onDataChange={(data) => handleDataChange(index, data)}
-                  roles={user?.data?.roles}
-                />
+                <div className="relative" key={`${type}-${id}`}>
+                  <div
+                    className="absolute top-0 -left-6 cursor-pointer"
+                    onClick={() => deleteGame(id)}
+                  >
+                    &#x2715;
+                  </div>
+                  <NumberNeighbor
+                    onDataChange={(data) => handleDataChange(index, data)}
+                    isEditable
+                    roles={user?.data.roles}
+                  />
+                </div>
               );
             }
             default: {

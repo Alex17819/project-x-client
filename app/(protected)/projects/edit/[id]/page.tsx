@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { UserRoles } from "@/types/user";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { nanoid } from "nanoid";
 
 const gameNames: GameType[] = [
   "GuessTheAnimal",
@@ -28,12 +29,9 @@ const gameNames: GameType[] = [
 
 export default function ProjectsPage() {
   const [parsedData, setParsedData] = useState<Game[]>([]);
-  const params = useParams();
+  const params = useParams<{ id?: string }>();
+  const id = Number(params?.id);
   const router = useRouter();
-
-  const id = params?.id;
-
-  console.log(parsedData);
 
   const { data, isLoading } = useQuery({
     queryKey: [`PROJECT_${id}_GET`],
@@ -51,6 +49,14 @@ export default function ProjectsPage() {
     retry: false,
     staleTime: 1000 * 60 * 5,
   });
+
+  useEffect(() => {
+    if (!data || !user) return;
+
+    if (data?.data.userId !== user?.data.id) {
+      router.push("/dashboard");
+    }
+  }, [data, data?.data.userId, router, user, user?.data.id]);
 
   const handleDataChange = (index: number, newData: Record<string, any>) => {
     setParsedData((prevData) => {
@@ -75,7 +81,12 @@ export default function ProjectsPage() {
   }, [data]);
 
   const addGame = (type: GameType) => {
-    setParsedData((prevState) => [...prevState, { type }]);
+    setParsedData((prevState) => [...prevState, { type, id: nanoid() }]);
+  };
+
+  const deleteGame = (gameId: string) => {
+    const newGames = parsedData.filter(({ id }) => gameId !== id);
+    setParsedData(newGames);
   };
 
   if (isUserLoading || isLoading) return <div>Loading...</div>;
@@ -96,9 +107,13 @@ export default function ProjectsPage() {
     } catch (error) {}
   };
 
-  return (
-    <div>
-      <Button>
+  return isLoading || isUserLoading ? (
+    <div className="size-full flex justify-center items-center">
+      <div className="loader" />
+    </div>
+  ) : (
+    <div className="mt-2 space-y-2">
+      <Button className="w-content">
         <Link href={`/projects/view/${id}`}>View</Link>
       </Button>
       <div className="flex justify-between">
@@ -111,57 +126,96 @@ export default function ProjectsPage() {
         </div>
         <Button onClick={saveProject}>Save</Button>
       </div>
-      {parsedData.map(({ type, data }, index) => {
+      {parsedData.map(({ type, data, id }, index) => {
         switch (type) {
           case "GuessTheAnimal": {
             return (
-              <GuessTheAnimal
-                key={`${type}-${index}`}
-                onDataChange={(data) => handleDataChange(index, data)}
-                data={data}
-                isEditable
-              />
+              <div className="relative" key={`${type}-${id}`}>
+                <div
+                  className="absolute top-0 -left-6 cursor-pointer"
+                  onClick={() => deleteGame(id)}
+                >
+                  &#x2715;
+                </div>
+                <GuessTheAnimal
+                  onDataChange={(data) => handleDataChange(index, data)}
+                  data={data}
+                  isEditable
+                  roles={user?.data.roles}
+                />
+              </div>
             );
           }
           case "MatchColors": {
             return (
-              <MatchColors
-                key={`${type}-${index}`}
-                onDataChange={(data) => handleDataChange(index, data)}
-                data={data}
-                isEditable
-              />
+              <div className="relative" key={`${type}-${id}`}>
+                <div
+                  className="absolute top-0 -left-6 cursor-pointer"
+                  onClick={() => deleteGame(id)}
+                >
+                  &#x2715;
+                </div>
+                <MatchColors
+                  onDataChange={(data) => handleDataChange(index, data)}
+                  data={data}
+                  isEditable
+                  roles={user?.data.roles}
+                />
+              </div>
             );
           }
           case "MatchQuantity": {
             return (
-              <MatchQuantity
-                key={`${type}-${index}`}
-                onDataChange={(data) => handleDataChange(index, data)}
-                data={data}
-                isEditable
-              />
+              <div className="relative" key={`${type}-${id}`}>
+                <div
+                  className="absolute top-0 -left-6 cursor-pointer"
+                  onClick={() => deleteGame(id)}
+                >
+                  &#x2715;
+                </div>
+                <MatchQuantity
+                  onDataChange={(data) => handleDataChange(index, data)}
+                  data={data}
+                  isEditable
+                  roles={user?.data.roles}
+                />
+              </div>
             );
           }
           case "MemoryCards": {
             return (
-              <MemoryCards
-                key={`${type}-${index}`}
-                data={data}
-                onDataChange={(data) => handleDataChange(index, data)}
-                isEditable
-              />
+              <div className="relative" key={`${type}-${id}`}>
+                <div
+                  className="absolute top-0 -left-6 cursor-pointer"
+                  onClick={() => deleteGame(id)}
+                >
+                  &#x2715;
+                </div>
+                <MemoryCards
+                  data={data}
+                  onDataChange={(data) => handleDataChange(index, data)}
+                  isEditable
+                  roles={user?.data.roles}
+                />
+              </div>
             );
           }
           case "NumberNeighbor": {
             return (
-              <NumberNeighbor
-                key={`${type}-${index}`}
-                data={data}
-                onDataChange={(data) => handleDataChange(index, data)}
-                isEditable
-                roles={user?.data.roles}
-              />
+              <div className="relative" key={`${type}-${id}`}>
+                <div
+                  className="absolute top-0 -left-6 cursor-pointer"
+                  onClick={() => deleteGame(id)}
+                >
+                  &#x2715;
+                </div>
+                <NumberNeighbor
+                  data={data}
+                  onDataChange={(data) => handleDataChange(index, data)}
+                  isEditable
+                  roles={user?.data.roles}
+                />
+              </div>
             );
           }
           default: {

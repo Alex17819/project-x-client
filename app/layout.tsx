@@ -32,7 +32,9 @@ export default function RootLayout({
         <ReactQueryClientProvider>
           <ToastProvider>
             <Header />
-            <main className="flex-1 px-[5%]">{children}</main>
+            <main className="flex-1 px-[5%] w-full max-w-[1440px] mx-auto">
+              {children}
+            </main>
           </ToastProvider>
         </ReactQueryClientProvider>
       </body>
