@@ -13,7 +13,7 @@ interface ButtonProps
 export const Button = ({ children, className, ...rest }: ButtonProps) => (
   <button
     className={clsx(
-      "border cursor-pointer py-1 px-2 hover:bg-black hover:text-white transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 disabled:hover:text-black",
+      "border cursor-pointer py-1 px-2 h-fit hover:bg-black hover:text-white transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 disabled:hover:text-black",
       className
     )}
     {...rest}

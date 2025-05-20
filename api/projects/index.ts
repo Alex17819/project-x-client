@@ -18,4 +18,10 @@ export class ProjectsApi {
       blocks: JSON.stringify(data),
     });
   }
+  static async shareProject(projectId: string, userIdToShare: string) {
+    return await api.post(`${API_ROUTES.projects}/share`, {
+      userId: userIdToShare,
+      projectId,
+    });
+  }
 }

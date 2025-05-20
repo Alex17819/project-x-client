@@ -14,18 +14,12 @@ const menu = [
     roles: UserRoles.TEACHER,
   },
   {
-    title: "Blocks",
-    link: "/blocks",
-  },
-  {
     title: "Register",
     link: "/register",
   },
 ];
 
 export const Header = () => {
-  const queryClient = useQueryClient();
-  const router = useRouter();
   const { data: user, refetch } = useQuery({
     queryKey: ["USER_GET"],
     queryFn: async () => {
@@ -51,20 +45,13 @@ export const Header = () => {
 
               if (item.link === "/register" && user?.data) {
                 return (
-                  <li
+                  <Link
                     key={index}
                     className="hover:text-[#CCD4DE] transition-colors cursor-pointer"
-                    onClick={async () => {
-                      await api.post("/auth/logout");
-                      queryClient.removeQueries({
-                        queryKey: ["USER_GET"],
-                      });
-                      router.replace("/login");
-                      await refetch();
-                    }}
+                    href="/account"
                   >
-                    Logout
-                  </li>
+                    Account
+                  </Link>
                 );
               }
 

@@ -47,10 +47,16 @@ export default function ProjectsPage() {
   useEffect(() => {
     if (!data || !userData) return;
 
-    if (data?.data.userId !== userData?.data.id) {
-      router.push("/dashboard");
+    const hasProject = userData?.data.projects.some(
+      (project) => project.id === data?.data.id
+    );
+
+    const isAuth = userData.status === 200;
+
+    if (!hasProject && isAuth) {
+      router.replace("/dashboard");
     }
-  }, [data, data?.data.userId, router, userData, userData?.data.id]);
+  }, [data, router, userData]);
 
   useEffect(() => {
     if (data?.data) {
@@ -94,8 +100,8 @@ export default function ProjectsPage() {
       filename: "games-for-kids.pdf",
       image: { type: "jpeg", quality: 0.85 },
       html2canvas: {
-        scale: 1.5, // Улучшает качество PDF
-        useCORS: true, // Для работы с изображениями из сети
+        scale: 1.5,
+        useCORS: true,
         logging: true,
       },
       jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
@@ -110,11 +116,11 @@ export default function ProjectsPage() {
   };
 
   return isLoading || isUserLoading ? (
-    <div className="size-full flex justify-center items-center">
+    <div className="mt-2 size-full flex justify-center items-center">
       <div className="loader" />
     </div>
   ) : (
-    <div className="space-y-2">
+    <div className="mt-2 space-y-2">
       {isPdfGenerating ? (
         <div className="fixed top-0 left-0 w-full h-full bg-black/50 z-20">
           <div className="size-full flex justify-center items-center">

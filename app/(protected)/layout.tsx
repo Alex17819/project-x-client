@@ -29,7 +29,5 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
     return <div>Loading...</div>;
   }
 
-  console.log(user?.data);
-
   return <>{children}</>;
 }
