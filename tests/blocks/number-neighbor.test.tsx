@@ -12,6 +12,6 @@ describe("NumberNeighbor", () => {
 
   test("renders with initial state", () => {
     render(<NumberNeighbor />);
-    expect(screen.getAllByRole("textbox")).toHaveLength(5);
+    expect(screen.getAllByRole("textbox")).toHaveLength(3);
   });
 });

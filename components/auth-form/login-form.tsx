@@ -59,31 +59,31 @@ export const LoginForm = () => {
         {errors?.email && (
           <span className="text-red-500">{errors.email?.message}</span>
         )}
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">Parola</label>
         <Input
           {...register("password", { required: true })}
           type="password"
           name="password"
           id="password"
-          placeholder="Password"
+          placeholder="Parola"
           className="border outline-none px-2"
         />
         {errors?.password && (
           <span className="text-red-500">{errors.password?.message}</span>
         )}
         <Button type="submit" disabled={isLoading}>
-          Login
+          Logare
         </Button>
       </form>
       <span>
-        Don&#39;t have an account?{" "}
+        Nu aveți un cont?{" "}
         <Link
           href="/register"
           className="text-blue-500 cursor-pointer hover:text-blue-700 transition-colors"
         >
-          Register
+          Înregistrați-vă
         </Link>
-        &nbsp;now
+        &nbsp;acum
       </span>
     </div>
   );

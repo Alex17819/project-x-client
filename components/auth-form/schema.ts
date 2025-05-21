@@ -2,13 +2,16 @@ import { z } from "zod";
 
 export const registerFormSchema = z
   .object({
-    email: z.string().email({ message: "Please enter a valid email." }).trim(),
+    email: z
+      .string()
+      .email({ message: "Vă rugăm să introduceți un e-mail valid." })
+      .trim(),
     password: z
       .string()
-      .min(8, { message: "Be at least 8 characters long" })
-      .max(20, { message: "Maximum 20 characters long" })
-      .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-      .regex(/[0-9]/, { message: "Contain at least one number." })
+      .min(8, { message: "Să aibă cel puțin 8 caractere" })
+      .max(20, { message: "Maxim 20 de caractere" })
+      .regex(/[a-zA-Z]/, { message: "Să conțină cel puțin o literă" })
+      .regex(/[0-9]/, { message: "Să conțină cel puțin un număr" })
       .trim(),
     passwordConfirmation: z.string(),
     isTeacher: z.boolean(),
@@ -17,20 +20,23 @@ export const registerFormSchema = z
     if (password !== passwordConfirmation) {
       ctx.addIssue({
         code: "custom",
-        message: "The passwords did not match",
+        message: "Parola nu coincide",
         path: ["passwordConfirmation"],
       });
     }
   });
 
 export const loginFormSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." }).trim(),
+  email: z
+    .string()
+    .email({ message: "Vă rugăm să introduceți un e-mail valid." })
+    .trim(),
   password: z
     .string()
-    .min(8, { message: "Be at least 8 characters long" })
-    .max(20, { message: "Maximum 20 characters long" })
-    .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-    .regex(/[0-9]/, { message: "Contain at least one number." })
+    .min(8, { message: "Să aibă cel puțin 8 caractere" })
+    .max(20, { message: "Maxim 20 de caractere" })
+    .regex(/[a-zA-Z]/, { message: "Să conțină cel puțin o literă" })
+    .regex(/[0-9]/, { message: "Să conțină cel puțin un număr" })
     .trim(),
 });
 

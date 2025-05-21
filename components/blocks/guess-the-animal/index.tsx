@@ -127,7 +127,7 @@ export const GuessTheAnimal = ({
                   answer: e.target.value,
                 });
               }}
-              placeholder="Enter your answer"
+              placeholder="Introduceți răspunsul"
               className="w-full"
             />
           </div>
@@ -138,7 +138,7 @@ export const GuessTheAnimal = ({
           onClick={() => setIsPreview(!isPreview)}
           disabled={!img || !answer}
         >
-          Preview
+          Vizualizează
         </Button>
       ) : null}
 

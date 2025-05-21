@@ -170,7 +170,7 @@ export const NumberNeighbor = ({
                         className="text-white bg-black/30 max-w-[188px] h-[60px] rounded-lg cursor-pointer flex justify-center items-center"
                         onClick={() => addRow(columnIndex)}
                       >
-                        Add row
+                        Adăugați rând
                       </div>
                     ) : null}
                     {roles?.includes(UserRoles.TEACHER) && isEditable ? (
@@ -196,7 +196,7 @@ export const NumberNeighbor = ({
                 className="text-white bg-black/30 w-[188px] max-h-[60px] rounded-lg cursor-pointer flex justify-center items-center"
                 onClick={addColumn}
               >
-                Add column
+                Adăugați coloana
               </div>
             ) : null}
           </div>

@@ -39,7 +39,7 @@ export const GalleryModal = ({
       const res = await FilesApi.getFiles();
 
       if (res.data.length === 0) {
-        toast.error("No images found");
+        toast.error("Nu s-au găsit imagini");
         return;
       }
 
@@ -104,7 +104,7 @@ export const GalleryModal = ({
 
       await refetch();
 
-      toast.success("Image uploaded successfully.");
+      toast.success("Imagine încărcată cu succes.");
       /* eslint-disable @typescript-eslint/no-explicit-any */
     } catch (e: any) {
       console.error(e);
@@ -132,7 +132,7 @@ export const GalleryModal = ({
           base64,
           filename: file.name,
         });
-        toast.success("Image uploaded!");
+        toast.success("Imagine încărcată!");
         await refetch();
       } catch (e) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -143,7 +143,7 @@ export const GalleryModal = ({
           toast.error(e.response.data.message);
           return;
         }
-        toast.error("Upload failed");
+        toast.error("Upload eșuat");
       }
     };
 
@@ -170,13 +170,13 @@ export const GalleryModal = ({
           </button>
           <ul className="flex gap-x-2">
             <li onClick={() => setTabOpen("images")}>
-              <Button>Images</Button>
+              <Button>Imagini</Button>
             </li>
             <li onClick={() => uploadUserImage()}>
-              <Button>Upload image</Button>
+              <Button>Încărcați imaginea</Button>
             </li>
             <li onClick={() => setTabOpen("ai")}>
-              <Button>Generate AI-image</Button>
+              <Button>Generarea imaginii AI</Button>
             </li>
           </ul>
         </div>
@@ -188,7 +188,7 @@ export const GalleryModal = ({
           ) : null}
           {tabOpen === "images" ? (
             <>
-              <h3>Your images</h3>
+              <h3>Imaginile tale</h3>
               <ul className="my-grid grid xxs:grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                 {data?.map((image, index) => {
                   return (
@@ -214,7 +214,7 @@ export const GalleryModal = ({
           ) : (
             <div>
               <textarea
-                placeholder="Enter your prompt..."
+                placeholder="Introduceți promptul..."
                 className="border size-full outline-none p-2 resize-none"
                 name="ai-prompt"
                 id="ai-prompt"
@@ -253,7 +253,7 @@ export const GalleryModal = ({
                   </Button>
                   <Input
                     type="text"
-                    placeholder="Enter filename..."
+                    placeholder="Introduceți numele fișierului..."
                     value={filename}
                     onChange={(e) => setFilename(e.target.value)}
                     className="w-full"

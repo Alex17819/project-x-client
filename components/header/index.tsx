@@ -8,13 +8,13 @@ import { useQuery } from "@tanstack/react-query";
 
 const menu = [
   {
-    title: "Dashboard",
+    title: "Proiecte",
     link: "/dashboard",
     isAuth: true,
     roles: UserRoles.TEACHER,
   },
   {
-    title: "Register",
+    title: "Înregistrare",
     link: "/register",
   },
 ];
@@ -37,7 +37,7 @@ export const Header = () => {
       <div className="max-w-[1440px] mx-auto flex items-center justify-between w-full px-[5%]">
         <Link href="/dashboard">
           <h1 className="text-[20px] font-bold hover:text-[#CCD4DE] transition-colors">
-            Project-X
+            MiniEdu
           </h1>
         </Link>
         <div>
@@ -52,7 +52,7 @@ export const Header = () => {
                     className="hover:text-[#CCD4DE] transition-colors cursor-pointer"
                     href="/account"
                   >
-                    Account
+                    Cont personal
                   </Link>
                 );
               }

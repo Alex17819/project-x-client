@@ -145,12 +145,14 @@ export const MemoryCards = ({
       {roles?.includes(UserRoles.TEACHER) && isEditable ? (
         <>
           <Button onClick={() => setIsVisible((prevState) => !prevState)}>
-            {isVisible ? "Hide" : "Show"} all values
+            {isVisible ? "Ascunde" : "Afișați"} toate valorile
           </Button>
           <Button onClick={() => setState(generateMatrix(4, 4))}>
-            Shuffle the cards
+            Amestecați cărțile
           </Button>
-          <Button onClick={toggleAllMatched}>Set all matched</Button>
+          <Button onClick={toggleAllMatched}>
+            Setează toate cărțile potrivite
+          </Button>
         </>
       ) : null}
     </div>

@@ -25,6 +25,11 @@ export type GameType =
   | "MemoryCards"
   | "NumberNeighbor";
 
+export interface GameTypes {
+  title: string;
+  type: GameType;
+}
+
 export interface Game {
   type: GameType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,12 +37,27 @@ export interface Game {
   id: string;
 }
 
-const gameNames: GameType[] = [
-  "GuessTheAnimal",
-  "MatchColors",
-  "MatchQuantity",
-  "MemoryCards",
-  "NumberNeighbor",
+const gameNames: GameTypes[] = [
+  {
+    type: "GuessTheAnimal",
+    title: "Ghicește denumirea",
+  },
+  {
+    type: "MatchColors",
+    title: "Potrivește culorile",
+  },
+  {
+    type: "MatchQuantity",
+    title: "Potrivește mulțimea",
+  },
+  {
+    type: "MemoryCards",
+    title: "Card de memorie",
+  },
+  {
+    type: "NumberNeighbor",
+    title: "Număr vecin",
+  },
 ];
 
 export default function CreateProjectPage() {
@@ -77,13 +97,13 @@ export default function CreateProjectPage() {
 
   const saveProject = async () => {
     if (!games?.length) {
-      toast.error("Add at least one game");
+      toast.error("Adăugați cel puțin un bloc");
       return;
     }
     try {
       const response = await ProjectsApi.saveProject(games);
       router.push(`/projects/edit/${response?.data.id}`);
-      toast.success("Project saved successfully");
+      toast.success("Proiect salvat cu succes");
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {}
   };
@@ -95,16 +115,16 @@ export default function CreateProjectPage() {
 
   return (
     <div className="mt-2 space-y-2">
-      {!games.length ? <h2>Add the first game</h2> : null}
+      {!games.length ? <h2>Adăugați primul bloc</h2> : null}
       <div className="flex justify-between">
         <div className="space-x-1">
-          {gameNames.map((gameName) => (
-            <Button key={gameName} onClick={() => addGame(gameName)}>
-              {gameName}
+          {gameNames.map(({ type, title }) => (
+            <Button key={type} onClick={() => addGame(type)}>
+              {title}
             </Button>
           ))}
         </div>
-        <Button onClick={saveProject}>Save</Button>
+        <Button onClick={saveProject}>Salvează</Button>
       </div>
 
       <div className="flex flex-col gap-y-4">

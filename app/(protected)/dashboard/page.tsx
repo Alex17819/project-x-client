@@ -45,16 +45,16 @@ export default function DashboardPage() {
     <>
       {!data?.length && user?.data.roles.includes(UserRoles.TEACHER) ? (
         <h2>
-          You do not have any project.{" "}
+          Nu aveți niciun proiect.{" "}
           <Link className="text-blue-400" href="/projects/create">
-            Create
+            Creați-l
           </Link>{" "}
-          the first one
+          pe primul
         </h2>
       ) : (
         <div className="flex justify-between">
           <div>
-            <h2>Your projects</h2>
+            <h2>Proiectele tale</h2>
             <div className="mt-2 flex gap-x-2">
               {user?.data.ProjectUser.map(({ projectId }) => (
                 <Link
@@ -70,7 +70,7 @@ export default function DashboardPage() {
 
           {user?.data.roles.includes(UserRoles.TEACHER) ? (
             <Button className="h-10">
-              <Link href="/projects/create">Create new</Link>
+              <Link href="/projects/create">Creare proiect nou</Link>
             </Button>
           ) : null}
         </div>

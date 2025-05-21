@@ -12,19 +12,38 @@ import {
 import { ProjectsApi } from "@/api/projects";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Game, GameType } from "@/app/(protected)/projects/create/page";
+import {
+  Game,
+  GameType,
+  GameTypes,
+} from "@/app/(protected)/projects/create/page";
 import { toast } from "react-toastify";
 import { UserRoles } from "@/types/user";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { nanoid } from "nanoid";
 
-const gameNames: GameType[] = [
-  "GuessTheAnimal",
-  "MatchColors",
-  "MatchQuantity",
-  "MemoryCards",
-  "NumberNeighbor",
+const gameNames: GameTypes[] = [
+  {
+    type: "GuessTheAnimal",
+    title: "Ghicește denumirea",
+  },
+  {
+    type: "MatchColors",
+    title: "Potrivește culorile",
+  },
+  {
+    type: "MatchQuantity",
+    title: "Potrivește mulțimea",
+  },
+  {
+    type: "MemoryCards",
+    title: "Card de memorie",
+  },
+  {
+    type: "NumberNeighbor",
+    title: "Număr vecin",
+  },
 ];
 
 export default function EditProjectPage() {
@@ -101,12 +120,12 @@ export default function EditProjectPage() {
 
   const saveProject = async () => {
     if (!parsedData?.length) {
-      toast.error("Add at least one game");
+      toast.error("Adăugați cel puțin un bloc");
       return;
     }
     try {
       await ProjectsApi.updateProject(id, parsedData);
-      toast.success("Project updated and saved successfully");
+      toast.success("Proiect actualizat și salvat cu succes");
     } catch (error) {
       console.error(error);
     }
@@ -120,17 +139,17 @@ export default function EditProjectPage() {
     <div className="space-y-2">
       <div className="sticky space-y-2 z-20 bg-[#ECEEF0] top-0 py-2 border-b border-b-black">
         <Button>
-          <Link href={`/projects/view/${id}`}>View</Link>
+          <Link href={`/projects/view/${id}`}>Vizualizare</Link>
         </Button>
         <div className="flex justify-between">
           <div className="space-x-1">
-            {gameNames.map((gameName) => (
-              <Button key={gameName} onClick={() => addGame(gameName)}>
-                {gameName}
+            {gameNames.map(({ type, title }) => (
+              <Button key={type} onClick={() => addGame(type)}>
+                {title}
               </Button>
             ))}
           </div>
-          <Button onClick={saveProject}>Save</Button>
+          <Button onClick={saveProject}>Salvează</Button>
         </div>
       </div>
       {parsedData.map(({ type, data, id }, index) => {

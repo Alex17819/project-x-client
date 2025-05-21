@@ -68,23 +68,23 @@ export const RegisterForm = () => {
         {errors?.email && (
           <span className="text-red-500">{errors.email?.message}</span>
         )}
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">Parola</label>
         <input
           {...registerInput("password", { required: true })}
           type="password"
           name="password"
           id="password"
-          placeholder="Password"
+          placeholder="Parola"
           className="border outline-none px-2"
         />
         {errors?.password && (
           <span className="text-red-500">{errors.password?.message}</span>
         )}
-        <label htmlFor="password-confirmation">Password confirmation</label>
+        <label htmlFor="password-confirmation">Confirmare parola</label>
         <input
           {...registerInput("passwordConfirmation", { required: true })}
           type="password"
-          placeholder="Password confirmation"
+          placeholder="Confirmare parola"
           className="border outline-none px-2"
         />
         {errors?.passwordConfirmation && (
@@ -100,7 +100,7 @@ export const RegisterForm = () => {
               name="isTeacher"
               id="isTeacher"
             />
-            Create account as a teacher
+            Creați un cont ca profesor
           </label>
         </div>
         <button
@@ -108,18 +108,18 @@ export const RegisterForm = () => {
           className="cursor-pointer border px-2 disabled:bg-gray-300 hover:bg-black hover:text-white transition-colors"
           disabled={isLoading}
         >
-          Register
+          Înregistrați-vă
         </button>
       </form>
       <span>
-        Already have an account?{" "}
+        Aveți deja un cont?{" "}
         <Link
           href="/login"
           className="text-blue-500 cursor-pointer hover:text-blue-700"
         >
-          Login&nbsp;
+          Logare&nbsp;
         </Link>
-        now
+        acum
       </span>
     </div>
   );

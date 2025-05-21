@@ -105,12 +105,12 @@ export default function ViewProjectPage() {
 
   const saveProject = async () => {
     if (!parsedData?.length) {
-      toast.error("Add at least one game");
+      toast.error("Adăugați cel puțin un bloc");
       return;
     }
     try {
       await ProjectsApi.updateProject(id, parsedData);
-      toast.success("Project updated and saved successfully");
+      toast.success("Proiect actualizat și salvat cu succes");
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {}
   };
@@ -153,15 +153,18 @@ export default function ViewProjectPage() {
       {userData?.data.roles.includes(UserRoles.TEACHER) ? (
         <div className="flex bg-[#ECEEF0] z-10 sticky top-0 py-2 border-b border-b-black justify-between items-center">
           <Button>
-            <Link href={`/projects/edit/${id}`}>Edit</Link>
+            <Link href={`/projects/edit/${id}`}>Editare</Link>
           </Button>
-          <Button onClick={saveProject}>Save</Button>
+          <div className="space-x-2 text-right">
+            <Button onClick={generatePdf}>Generare PDF</Button>
+            <Button onClick={saveProject}>Salvează</Button>
+          </div>
         </div>
       ) : null}
       {!userData?.data.roles.includes(UserRoles.TEACHER) ? (
         <div className="space-x-2 text-right">
-          <Button onClick={generatePdf}>Generate PDF</Button>
-          <Button onClick={saveProject}>Save</Button>
+          <Button onClick={generatePdf}>Generare PDF</Button>
+          <Button onClick={saveProject}>Salvează</Button>
         </div>
       ) : null}
       <div ref={pageRef} className="space-y-2">
