@@ -3,8 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/axios";
 import { Button } from "@/components/ui/button";
-import { usePathname, useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { ProjectsApi } from "@/api/projects";
 import { UserRoles } from "@/types/user";
@@ -13,11 +11,8 @@ import { useAuth } from "@/hooks";
 
 export default function AccountPage() {
   const queryClient = useQueryClient();
-  const router = useRouter();
-  const pathname = usePathname();
   const isAuth = useAuth();
 
-  const [userId, setUserId] = useState("");
   const [projectId, setProjectId] = useState("");
   const [generatedLink, setGeneratedLink] = useState("");
 
@@ -50,10 +45,13 @@ export default function AccountPage() {
   });
 
   useEffect(() => {
-    if (projectsResponse?.[0].id) {
+    if (
+      projectsResponse?.[0]?.id &&
+      data?.data.roles.includes(UserRoles.TEACHER)
+    ) {
       setProjectId(projectsResponse?.[0].id + "");
     }
-  }, [projectsResponse]);
+  }, [data?.data.roles, projectsResponse]);
 
   if (!data || isLoading || projectsLoading) return <div>Loading...</div>;
 
@@ -63,7 +61,7 @@ export default function AccountPage() {
     try {
       await ProjectsApi.publishProject(+projectId);
       toast.success("Testul postat cu success");
-      setGeneratedLink(`http://localhost:3000/project/view/${projectId}`);
+      setGeneratedLink(`http://localhost:3000/projects/view/${projectId}`);
     } catch (e) {
       toast.error(e.response.data.message);
     }

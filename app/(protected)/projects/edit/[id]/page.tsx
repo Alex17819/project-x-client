@@ -54,15 +54,11 @@ export default function EditProjectPage() {
     if (!data || !user) return;
     if (
       !user?.data.roles.includes(UserRoles.TEACHER) ||
-      data?.data.createdBy !== user?.data.id
+      data?.data.userId !== user?.data.id
     ) {
       router.push("/dashboard");
       return;
     }
-
-    // if (data?.data.userId !== user?.data.id) {
-    //   router.push("/dashboard");
-    // }
   }, [data, data?.data.userId, router, user, user?.data.id]);
 
   const handleDataChange = (index: number, newData: Record<string, any>) => {
@@ -79,7 +75,7 @@ export default function EditProjectPage() {
   useEffect(() => {
     if (data?.data) {
       try {
-        const blocks = JSON.parse(data?.data?.blocks);
+        const blocks = JSON.parse(data?.data.data.blocks);
         setParsedData(blocks);
       } catch (e) {
         console.error(e);
@@ -109,9 +105,11 @@ export default function EditProjectPage() {
       return;
     }
     try {
-      const response = await ProjectsApi.updateProject(id, parsedData);
+      await ProjectsApi.updateProject(id, parsedData);
       toast.success("Project updated and saved successfully");
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return isLoading || isUserLoading ? (

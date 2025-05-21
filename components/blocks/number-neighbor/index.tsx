@@ -46,6 +46,9 @@ export const NumberNeighbor = ({
             if (value.length > 2) {
               return row;
             }
+            if (!/^[0-9]*$/.test(value)) {
+              return row;
+            }
             if (inputIndex === 0) {
               return [value === "" ? null : Number(value), row[1], row[2]];
             }

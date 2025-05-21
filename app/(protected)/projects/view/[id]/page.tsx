@@ -18,6 +18,7 @@ import Link from "next/link";
 import { UserRoles } from "@/types/user";
 import { toast } from "react-toastify";
 import html2pdf from "html2pdf.js";
+import { useAuth } from "@/hooks";
 
 export default function ViewProjectPage() {
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function ViewProjectPage() {
   const params = useParams<{ id?: string }>();
   const id = Number(params?.id);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const isAuth = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: [`PROJECT_${id}_GET`],
@@ -44,40 +46,43 @@ export default function ViewProjectPage() {
     staleTime: 0,
   });
 
+  const hasProject = userData?.data.ProjectUser.some(
+    (project: { projectId: number }) => project.projectId === id
+  );
+
   useEffect(() => {
-    if (!data || !userData) return;
+    if (isUserLoading || isLoading) return;
+    if (userData?.status === 200 && !hasProject && data?.data.isPublic) {
+      const shareProject = async () => {
+        await ProjectsApi.shareProject(String(id), String(userData?.data.id));
+      };
+
+      shareProject().then(() => {
+        window.location.reload();
+      });
+    }
     if (
-      !data.data.isPublic &&
+      !data?.data.isPublic &&
       !userData?.data.roles.includes(UserRoles.TEACHER)
     ) {
       router.push("/dashboard");
       return;
     }
-
-    const shareProject = async () => {
-      const response = await ProjectsApi.shareProject(
-        String(id),
-        String(userData.data.id)
-      );
-    };
-
-    const hasProject = userData?.data.projects.some(
-      (project) => project.id === data?.data.id
-    );
-
-    const isAuth = userData.status === 200;
-
-    if (!hasProject && isAuth && data.data.isPublic) {
-      shareProject().then(() => {
-        window.location.reload();
-      });
-    }
-  }, [data, id, userData]);
+  }, [
+    data,
+    hasProject,
+    id,
+    isAuth,
+    isLoading,
+    isUserLoading,
+    router,
+    userData,
+  ]);
 
   useEffect(() => {
     if (data?.data) {
       try {
-        const blocks = JSON.parse(data?.data?.blocks);
+        const blocks = JSON.parse(data?.data.data.blocks);
         setParsedData(blocks);
       } catch (e) {
         console.error(e);
@@ -86,7 +91,7 @@ export default function ViewProjectPage() {
   }, [data]);
 
   const roles = userData?.data.roles;
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDataChange = (index: number, newData: Record<string, any>) => {
     setParsedData((prevData) => {
       const updatedData = [...prevData];
@@ -104,8 +109,9 @@ export default function ViewProjectPage() {
       return;
     }
     try {
-      const response = await ProjectsApi.updateProject(id, parsedData);
+      await ProjectsApi.updateProject(id, parsedData);
       toast.success("Project updated and saved successfully");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {}
   };
 
@@ -149,16 +155,14 @@ export default function ViewProjectPage() {
           <Button>
             <Link href={`/projects/edit/${id}`}>Edit</Link>
           </Button>
-          <div className="space-x-2">
-            <Button onClick={generatePdf}>Generate PDF</Button>
-            <Button onClick={saveProject}>Save</Button>
-          </div>
+          <Button onClick={saveProject}>Save</Button>
         </div>
       ) : null}
       {!userData?.data.roles.includes(UserRoles.TEACHER) ? (
-        <Button onClick={generatePdf} className="float-right">
-          Generate PDF
-        </Button>
+        <div className="space-x-2 text-right">
+          <Button onClick={generatePdf}>Generate PDF</Button>
+          <Button onClick={saveProject}>Save</Button>
+        </div>
       ) : null}
       <div ref={pageRef} className="space-y-2">
         {parsedData.map(({ type, data }, index) => {

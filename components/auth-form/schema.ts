@@ -14,7 +14,6 @@ export const registerFormSchema = z
     isTeacher: z.boolean(),
   })
   .superRefine(({ password, passwordConfirmation }, ctx) => {
-    console.log(password, passwordConfirmation);
     if (password !== passwordConfirmation) {
       ctx.addIssue({
         code: "custom",

@@ -56,13 +56,13 @@ export default function DashboardPage() {
           <div>
             <h2>Your projects</h2>
             <div className="mt-2 flex gap-x-2">
-              {data?.map(({ id }) => (
+              {user?.data.ProjectUser.map(({ projectId }) => (
                 <Link
-                  href={`/projects/view/${id}`}
-                  key={id}
+                  href={`/projects/view/${projectId}`}
+                  key={projectId}
                   className="border border-gray-400 p-2"
                 >
-                  {id}
+                  {projectId}
                 </Link>
               ))}
             </div>

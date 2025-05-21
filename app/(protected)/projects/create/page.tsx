@@ -27,6 +27,7 @@ export type GameType =
 
 export interface Game {
   type: GameType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: Record<string, any>;
   id: string;
 }
@@ -62,7 +63,7 @@ export default function CreateProjectPage() {
   const addGame = (type: GameType) => {
     setGames((prevState) => [...prevState, { type, id: nanoid() }]);
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDataChange = (index: number, newData: Record<string, any>) => {
     setGames((prevData) => {
       const updatedData = [...prevData];
@@ -83,6 +84,7 @@ export default function CreateProjectPage() {
       const response = await ProjectsApi.saveProject(games);
       router.push(`/projects/edit/${response?.data.id}`);
       toast.success("Project saved successfully");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {}
   };
 

@@ -19,7 +19,7 @@ export const GalleryModal = ({
   onClose: VoidFunction;
   onClick?: (img: string) => void;
 }) => {
-  const [images, setImages] = useState<{ link: string }[]>([]);
+  const [, setImages] = useState<{ link: string }[]>([]);
   const [tabOpen, setTabOpen] = useState<"images" | "ai">("images");
   const [value, setValue] = useState("");
   const [url, setUrl] = useState("");
@@ -31,13 +31,11 @@ export const GalleryModal = ({
 
   const {
     isLoading: isLoadingImages,
-    error,
     data,
     refetch,
   } = useQuery({
     queryKey: ["GALLERY_GET_IMAGES"],
     queryFn: async () => {
-      console.log("REAL FETCH");
       const res = await FilesApi.getFiles();
 
       if (res.data.length === 0) {

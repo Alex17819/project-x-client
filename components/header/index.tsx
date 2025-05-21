@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/axios";
-import { usePathname, useRouter } from "next/navigation";
 import { UserRoles } from "@/types/user";
-import { useEffect } from "react";
 import { useAuth } from "@/hooks";
+import { useQuery } from "@tanstack/react-query";
 
 const menu = [
   {
@@ -33,8 +31,6 @@ export const Header = () => {
     staleTime: 0,
     enabled: isAuthenticated === true,
   });
-
-  console.log("HEADER", user);
 
   return (
     <header className="bg-[#3E53A0] text-white py-5">

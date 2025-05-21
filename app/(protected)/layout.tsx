@@ -21,7 +21,6 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
     if (isLoading) return;
 
     if (!user?.data) {
-      console.log("REDIRECT LOGIN");
       router.replace("/login");
     }
   }, [user, router, isLoading]);

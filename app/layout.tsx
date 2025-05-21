@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { Comic_Neue } from "next/font/google";
 
-import Link from "next/link";
-
 import { ToastProvider } from "@/components/providers/toastify";
 import "./globals.css";
 import { ReactQueryClientProvider } from "@/components/providers/react-query";
