@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const useLockBodyScroll = (enabled: boolean) => {
   useEffect(() => {
@@ -27,4 +27,21 @@ export const useLockBodyScroll = (enabled: boolean) => {
       }
     };
   }, [enabled]);
+};
+
+export const useAuth = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const hasAuthCookies =
+        document.cookie.includes("accessToken") ||
+        document.cookie.includes("refreshToken");
+      setIsAuthenticated(hasAuthCookies);
+    };
+
+    checkAuth();
+  }, []);
+
+  return isAuthenticated;
 };

@@ -14,13 +14,14 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
       return await api.get("/user");
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
   });
 
   useEffect(() => {
     if (isLoading) return;
 
     if (!user?.data) {
+      console.log("REDIRECT LOGIN");
       router.replace("/login");
     }
   }, [user, router, isLoading]);

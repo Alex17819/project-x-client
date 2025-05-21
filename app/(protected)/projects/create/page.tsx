@@ -49,7 +49,7 @@ export default function CreateProjectPage() {
       return await api.get("/user");
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
   });
 
   if (isLoading) return <div>Loading...</div>;

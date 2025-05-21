@@ -1,27 +1,34 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/axios";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProjectsApi } from "@/api/projects";
+import { UserRoles } from "@/types/user";
+import { toast } from "react-toastify";
+import { useAuth } from "@/hooks";
 
 export default function AccountPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const pathname = usePathname();
+  const isAuth = useAuth();
 
   const [userId, setUserId] = useState("");
   const [projectId, setProjectId] = useState("");
+  const [generatedLink, setGeneratedLink] = useState("");
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["USER_GET"],
     queryFn: async () => {
       return await api.get("/user");
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    enabled: isAuth === true,
   });
 
   const { data: projectsResponse, isLoading: projectsLoading } = useQuery({
@@ -32,48 +39,74 @@ export default function AccountPage() {
     },
   });
 
+  const { mutate: logout } = useMutation({
+    mutationFn: () => api.post("/auth/logout"),
+    onSuccess: () => {
+      queryClient.removeQueries({
+        queryKey: ["USER_GET"],
+      });
+      window.location.pathname = "/login";
+    },
+  });
+
+  useEffect(() => {
+    if (projectsResponse?.[0].id) {
+      setProjectId(projectsResponse?.[0].id + "");
+    }
+  }, [projectsResponse]);
+
   if (!data || isLoading || projectsLoading) return <div>Loading...</div>;
 
-  const logout = async () => {
-    await api.post("/auth/logout");
-    queryClient.removeQueries({
-      queryKey: ["USER_GET"],
-    });
-    router.replace("/login");
-    await refetch();
-  };
+  const generateLink = async () => {
+    if (!projectId) return;
 
-  const shareProject = async () => {
-    const response = await ProjectsApi.shareProject(projectId, userId);
+    try {
+      await ProjectsApi.publishProject(+projectId);
+      toast.success("Testul postat cu success");
+      setGeneratedLink(`http://localhost:3000/project/view/${projectId}`);
+    } catch (e) {
+      toast.error(e.response.data.message);
+    }
   };
 
   return (
     <div className="mt-2 flex justify-between">
       <div>
         Your id: {data?.data.id}
-        <div className="space-x-2">
-          <span>Share a project with another user:</span>
-          <select
-            className="border outline-none px-2"
-            value={projectId}
-            onChange={(e) => setProjectId(e.target.value)}
-          >
-            {projectsResponse?.map(({ id }) => (
-              <option key={id} value={id}>
-                {id}
-              </option>
-            ))}
-          </select>
-          <Input
-            placeholder="Enter user's id"
-            onChange={(e) => setUserId(e.target.value)}
-            value={userId}
-          />
-        </div>
-        <Button onClick={shareProject}>Send</Button>
+        {data?.data.roles.includes(UserRoles.TEACHER) ? (
+          <>
+            <div className="space-x-2">
+              <span>Share a project with another users:</span>
+              <select
+                className="border outline-none px-2"
+                value={projectId || projectsResponse?.[0].id}
+                onChange={(e) => setProjectId(e.target.value)}
+              >
+                {projectsResponse?.map(({ id }) => (
+                  <option key={id} value={id}>
+                    {id}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Button onClick={generateLink}>Generate</Button>
+            <div>Link to share:</div>
+            {generatedLink ? (
+              <span
+                className="cursor-pointer"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(generatedLink);
+                  toast.success("Link copied to clipboard");
+                }}
+              >
+                {generatedLink}
+              </span>
+            ) : null}
+          </>
+        ) : null}
       </div>
 
-      <Button onClick={logout} className="float-right">
+      <Button onClick={() => logout()} className="float-right">
         Logout
       </Button>
     </div>

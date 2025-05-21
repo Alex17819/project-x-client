@@ -27,7 +27,7 @@ const gameNames: GameType[] = [
   "NumberNeighbor",
 ];
 
-export default function ProjectsPage() {
+export default function EditProjectPage() {
   const [parsedData, setParsedData] = useState<Game[]>([]);
   const params = useParams<{ id?: string }>();
   const id = Number(params?.id);
@@ -47,15 +47,22 @@ export default function ProjectsPage() {
       return await api.get("/user");
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
   });
 
   useEffect(() => {
     if (!data || !user) return;
-
-    if (data?.data.userId !== user?.data.id) {
+    if (
+      !user?.data.roles.includes(UserRoles.TEACHER) ||
+      data?.data.createdBy !== user?.data.id
+    ) {
       router.push("/dashboard");
+      return;
     }
+
+    // if (data?.data.userId !== user?.data.id) {
+    //   router.push("/dashboard");
+    // }
   }, [data, data?.data.userId, router, user, user?.data.id]);
 
   const handleDataChange = (index: number, newData: Record<string, any>) => {

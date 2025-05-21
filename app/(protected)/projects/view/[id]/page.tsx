@@ -19,7 +19,7 @@ import { UserRoles } from "@/types/user";
 import { toast } from "react-toastify";
 import html2pdf from "html2pdf.js";
 
-export default function ProjectsPage() {
+export default function ViewProjectPage() {
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Game[]>([]);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -41,11 +41,25 @@ export default function ProjectsPage() {
       return await api.get("/user");
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
   });
 
   useEffect(() => {
     if (!data || !userData) return;
+    if (
+      !data.data.isPublic &&
+      !userData?.data.roles.includes(UserRoles.TEACHER)
+    ) {
+      router.push("/dashboard");
+      return;
+    }
+
+    const shareProject = async () => {
+      const response = await ProjectsApi.shareProject(
+        String(id),
+        String(userData.data.id)
+      );
+    };
 
     const hasProject = userData?.data.projects.some(
       (project) => project.id === data?.data.id
@@ -53,10 +67,12 @@ export default function ProjectsPage() {
 
     const isAuth = userData.status === 200;
 
-    if (!hasProject && isAuth) {
-      router.replace("/dashboard");
+    if (!hasProject && isAuth && data.data.isPublic) {
+      shareProject().then(() => {
+        window.location.reload();
+      });
     }
-  }, [data, router, userData]);
+  }, [data, id, userData]);
 
   useEffect(() => {
     if (data?.data) {
@@ -138,6 +154,11 @@ export default function ProjectsPage() {
             <Button onClick={saveProject}>Save</Button>
           </div>
         </div>
+      ) : null}
+      {!userData?.data.roles.includes(UserRoles.TEACHER) ? (
+        <Button onClick={generatePdf} className="float-right">
+          Generate PDF
+        </Button>
       ) : null}
       <div ref={pageRef} className="space-y-2">
         {parsedData.map(({ type, data }, index) => {

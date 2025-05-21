@@ -6,8 +6,11 @@ import { ProjectsApi } from "@/api/projects";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { UserRoles } from "@/types/user";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { data, isLoading } = useQuery({
     queryKey: ["PROJECTS_GET"],
     queryFn: async () => {
@@ -22,8 +25,17 @@ export default function DashboardPage() {
       return await api.get("/user");
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
   });
+
+  useEffect(() => {
+    if (isUserLoading) return;
+
+    if (user?.status !== 200) {
+      router.push("/login");
+      return;
+    }
+  }, [isUserLoading, router, user]);
 
   return isLoading || isUserLoading ? (
     <div className="size-full flex justify-center items-center">

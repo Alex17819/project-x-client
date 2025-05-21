@@ -494,7 +494,7 @@ export const MatchColors = ({
       />
       {isColorPickerOpen ? (
         <div
-          className="absolute -translate-y-[50%]"
+          className="absolute -translate-y-[50%] z-30"
           style={{
             top: colorPickerCoordinates.y,
             left: colorPickerCoordinates.x,

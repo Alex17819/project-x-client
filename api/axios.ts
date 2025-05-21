@@ -30,7 +30,14 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
-    if (error?.response?.status === 401 && !originalRequest._retry) {
+
+    const hasRefreshToken = document.cookie.includes("refreshToken");
+
+    if (
+      error?.response?.status === 401 &&
+      !originalRequest._retry &&
+      hasRefreshToken
+    ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           subscribeTokenRefresh(() => {

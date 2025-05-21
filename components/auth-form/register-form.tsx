@@ -47,7 +47,7 @@ export const RegisterForm = () => {
       return;
     }
     toast.success(res.data.message);
-    router.push("/projects");
+    router.push("/dashboard");
   };
 
   return (

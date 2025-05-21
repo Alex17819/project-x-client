@@ -24,4 +24,7 @@ export class ProjectsApi {
       projectId,
     });
   }
+  static async publishProject(id: number) {
+    return await api.put(`${API_ROUTES.projects}/publish/${id}`);
+  }
 }

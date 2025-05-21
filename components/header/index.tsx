@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UserRoles } from "@/types/user";
+import { useEffect } from "react";
+import { useAuth } from "@/hooks";
 
 const menu = [
   {
@@ -20,20 +22,24 @@ const menu = [
 ];
 
 export const Header = () => {
-  const { data: user, refetch } = useQuery({
+  const isAuthenticated = useAuth();
+
+  const { data: user } = useQuery({
     queryKey: ["USER_GET"],
     queryFn: async () => {
       return await api.get("/user");
     },
     retry: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: false,
+    staleTime: 0,
+    enabled: isAuthenticated === true,
   });
+
+  console.log("HEADER", user);
 
   return (
     <header className="bg-[#3E53A0] text-white py-5">
       <div className="max-w-[1440px] mx-auto flex items-center justify-between w-full px-[5%]">
-        <Link href="/blocks">
+        <Link href="/dashboard">
           <h1 className="text-[20px] font-bold hover:text-[#CCD4DE] transition-colors">
             Project-X
           </h1>
