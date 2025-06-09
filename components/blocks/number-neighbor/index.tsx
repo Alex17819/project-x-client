@@ -119,7 +119,7 @@ export const NumberNeighbor = ({
   };
 
   return (
-    <div className="flex gap-x-5">
+    <div className="border-4 border-amber-600 flex justify-center gap-x-5 py-4">
       {state.map((column, columnIndex) => {
         return (
           <div key={columnIndex} className="flex gap-5">

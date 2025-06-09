@@ -105,10 +105,10 @@ export const MemoryCards = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-y-2">
+    <div className="border-4 border-amber-600 flex flex-col items-center gap-y-5 py-4">
       {state.map((row, rowIndex) => {
         return (
-          <ul key={rowIndex} className="flex gap-2">
+          <ul key={rowIndex} className="flex gap-2 scale-130">
             {row.map((item, itemIndex) => {
               const isMatched = item.isMatched;
 

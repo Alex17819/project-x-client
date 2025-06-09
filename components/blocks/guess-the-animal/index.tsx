@@ -65,7 +65,7 @@ export const GuessTheAnimal = ({
   };
 
   return (
-    <div className="border flex justify-center items-center flex-col">
+    <div className="border-4 border-amber-600 flex justify-center items-center flex-col py-4">
       <div className="relative">
         {img ? (
           <Image

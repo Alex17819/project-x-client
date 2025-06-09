@@ -275,7 +275,7 @@ export const MatchColors = ({
   }, []);
 
   return (
-    <div ref={containerRef} className="flex gap-x-[250px] relative">
+    <div ref={containerRef} className="border-4 border-amber-600 flex justify-center gap-x-[250px] relative py-4">
       <svg className="absolute size-full top-0 left-0 pointer-events-none">
         {lines.map((line, index) => (
           <line

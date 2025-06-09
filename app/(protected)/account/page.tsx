@@ -70,11 +70,11 @@ export default function AccountPage() {
   return (
     <div className="mt-2 flex justify-between">
       <div>
-        Your id: {data?.data.id}
+        Id-ul tău: {data?.data.id}
         {data?.data.roles.includes(UserRoles.TEACHER) ? (
           <>
             <div className="space-x-2">
-              <span>Share a project with another users:</span>
+              <span>Partajați un proiect cu alți utilizatori:</span>
               <select
                 className="border outline-none px-2"
                 value={projectId || projectsResponse?.[0].id}
@@ -87,14 +87,14 @@ export default function AccountPage() {
                 ))}
               </select>
             </div>
-            <Button onClick={generateLink}>Generate</Button>
-            <div>Link to share:</div>
+            <Button onClick={generateLink}>Generează</Button>
+            <div>Link pentru partajare:</div>
             {generatedLink ? (
               <span
                 className="cursor-pointer"
                 onClick={async () => {
                   await navigator.clipboard.writeText(generatedLink);
-                  toast.success("Link copied to clipboard");
+                  toast.success("Link copiat");
                 }}
               >
                 {generatedLink}
@@ -105,7 +105,7 @@ export default function AccountPage() {
       </div>
 
       <Button onClick={() => logout()} className="float-right">
-        Logout
+        Delogare
       </Button>
     </div>
   );
