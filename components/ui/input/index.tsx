@@ -1,13 +1,11 @@
-import React, { DetailedHTMLProps, InputHTMLAttributes } from "react";
+import { TextField, TextFieldProps } from "@mui/material";
 
-import { clsx } from "clsx";
-
-export const Input = ({
-  className,
-  ...rest
-}: DetailedHTMLProps<
-  InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->) => (
-  <input className={clsx("border outline-none px-2", className)} {...rest} />
+export const Input = ({ ...rest }: TextFieldProps) => (
+  <TextField
+    variant="outlined"
+    style={{
+      fontFamily: "Comic Neue",
+    }}
+    {...rest}
+  />
 );

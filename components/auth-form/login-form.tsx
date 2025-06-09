@@ -48,25 +48,22 @@ export const LoginForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-y-2 justify-center items-center"
       >
-        <label htmlFor="email">Email</label>
         <Input
           {...register("email", { required: true })}
           type="text"
           name="email"
           id="email"
-          placeholder="Email"
+          label="Email"
         />
         {errors?.email && (
           <span className="text-red-500">{errors.email?.message}</span>
         )}
-        <label htmlFor="password">Parola</label>
         <Input
           {...register("password", { required: true })}
           type="password"
           name="password"
           id="password"
-          placeholder="Parola"
-          className="border outline-none px-2"
+          label="Parola"
         />
         {errors?.password && (
           <span className="text-red-500">{errors.password?.message}</span>

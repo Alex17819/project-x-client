@@ -155,14 +155,14 @@ export default function ViewProjectPage() {
           <Button>
             <Link href={`/projects/edit/${id}`}>Editare</Link>
           </Button>
-          <div className="space-x-2 text-right">
+          <div className="flex gap-x-2 text-right">
             <Button onClick={generatePdf}>Generare PDF</Button>
             <Button onClick={saveProject}>Salvează</Button>
           </div>
         </div>
       ) : null}
       {!userData?.data.roles.includes(UserRoles.TEACHER) ? (
-        <div className="space-x-2 text-right">
+        <div className="flex gap-x-2 text-right">
           <Button onClick={generatePdf}>Generare PDF</Button>
           <Button onClick={saveProject}>Salvează</Button>
         </div>

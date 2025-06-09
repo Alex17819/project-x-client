@@ -10,6 +10,9 @@ import { toast } from "react-toastify";
 
 import { AuthApi } from "@/api/auth";
 import { registerFormSchema } from "./schema";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@mui/material";
+import { Button } from "@/components/ui/button";
 
 type Inputs = {
   email: string;
@@ -56,36 +59,30 @@ export const RegisterForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-y-2 justify-center items-center"
       >
-        <label htmlFor="email">Email</label>
-        <input
+        <Input
           {...registerInput("email", { required: true })}
           type="text"
           name="email"
           id="email"
-          placeholder="Email"
-          className="border outline-none px-2"
+          label="Email"
         />
         {errors?.email && (
           <span className="text-red-500">{errors.email?.message}</span>
         )}
-        <label htmlFor="password">Parola</label>
-        <input
+        <Input
           {...registerInput("password", { required: true })}
           type="password"
           name="password"
           id="password"
-          placeholder="Parola"
-          className="border outline-none px-2"
+          label="Parola"
         />
         {errors?.password && (
           <span className="text-red-500">{errors.password?.message}</span>
         )}
-        <label htmlFor="password-confirmation">Confirmare parola</label>
-        <input
+        <Input
           {...registerInput("passwordConfirmation", { required: true })}
           type="password"
-          placeholder="Confirmare parola"
-          className="border outline-none px-2"
+          label="Confirmare parola"
         />
         {errors?.passwordConfirmation && (
           <span className="text-red-500">
@@ -93,9 +90,11 @@ export const RegisterForm = () => {
           </span>
         )}
         <div className="flex gap-x-2 items-center">
-          <label htmlFor="isTeacher" className="flex gap-x-2 cursor-pointer">
-            <input
-              type="checkbox"
+          <label
+            htmlFor="isTeacher"
+            className="flex gap-x-2 items-center cursor-pointer"
+          >
+            <Checkbox
               {...registerInput("isTeacher")}
               name="isTeacher"
               id="isTeacher"
@@ -103,13 +102,13 @@ export const RegisterForm = () => {
             Creați un cont ca profesor
           </label>
         </div>
-        <button
+        <Button
           type="submit"
-          className="cursor-pointer border px-2 disabled:bg-gray-300 hover:bg-black hover:text-white transition-colors"
+          // className="cursor-pointer border px-2 disabled:bg-gray-300 hover:bg-black hover:text-white transition-colors"
           disabled={isLoading}
         >
           Înregistrați-vă
-        </button>
+        </Button>
       </form>
       <span>
         Aveți deja un cont?{" "}
