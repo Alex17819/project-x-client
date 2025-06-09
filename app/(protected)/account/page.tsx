@@ -104,7 +104,7 @@ export default function AccountPage() {
         ) : null}
       </div>
 
-      <Button onClick={() => logout()} className="float-right">
+      <Button onClick={() => logout()} className="float-right max-h-max">
         Delogare
       </Button>
     </div>

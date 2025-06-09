@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { UserRoles } from "@/types/user";
+import { clsx } from "clsx";
 
 interface Props {
   onDataChange?: (data: { state?: (number | null)[][][] }) => void;
@@ -11,6 +12,7 @@ interface Props {
   };
   roles?: UserRoles[];
   isEditable?: boolean;
+  isPdfGenerating?: boolean;
 }
 
 export const NumberNeighbor = ({
@@ -18,6 +20,7 @@ export const NumberNeighbor = ({
   onDataChange,
   data,
   isEditable,
+  isPdfGenerating = false,
 }: Props) => {
   const [state, setState] = useState<(number | null)[][][]>([
     [[null, null, null]],
@@ -119,7 +122,14 @@ export const NumberNeighbor = ({
   };
 
   return (
-    <div className="border-4 border-amber-600 flex justify-center gap-x-5 py-4">
+    <div
+      className={clsx(
+        "game-block border-4 border-[#2b7fff] flex justify-center gap-x-5 py-4",
+        {
+          "border-none": isPdfGenerating,
+        }
+      )}
+    >
       {state.map((column, columnIndex) => {
         return (
           <div key={columnIndex} className="flex gap-5">
@@ -135,19 +145,24 @@ export const NumberNeighbor = ({
                         return (
                           <div
                             key={inputIndex}
-                            className="relative flex justify-center items-center"
+                            className="relative flex justify-center items-center size-20"
                           >
-                            <Image
+                            <img
                               className="absolute top-0 left-0 object-cover"
                               src="/assets/images/flower2.png"
-                              width={60}
-                              height={60}
+                              width={100}
+                              height={100}
                               alt="flower"
                             />
-                            <div className="absolute top-[50%] left-[50%] -translate-[50%] size-7 bg-yellow-400 rounded-full shadow-[0_0_20px_#fdc700]" />
+                            <div className="absolute top-[50%] left-[50%] -translate-[50%] size-10 bg-[#fdc700] rounded-full shadow-[0_0_20px_#fdc700]" />
                             <input
                               type="text"
-                              className="relative text-red-500 text-[24px] size-15 text-center outline-none z-2"
+                              className={clsx(
+                                "relative text-[#fb2c36] text-3xl size-15 text-center outline-none z-2",
+                                {
+                                  "translate-y-[12px]": isPdfGenerating,
+                                }
+                              )}
                               value={number ?? ""}
                               onChange={(e) =>
                                 onChange({
@@ -167,7 +182,7 @@ export const NumberNeighbor = ({
                     isEditable &&
                     column.length < 5 ? (
                       <div
-                        className="text-white bg-black/30 max-w-[188px] h-[60px] rounded-lg cursor-pointer flex justify-center items-center"
+                        className="text-white bg-[#0000003A] max-w-[188px] h-[60px] rounded-lg cursor-pointer flex justify-center items-center"
                         onClick={() => addRow(columnIndex)}
                       >
                         Adăugați rând
@@ -193,7 +208,7 @@ export const NumberNeighbor = ({
             isEditable &&
             state.length < 3 ? (
               <div
-                className="text-white bg-black/30 w-[188px] max-h-[60px] rounded-lg cursor-pointer flex justify-center items-center"
+                className="text-white bg-[#0000003A] w-[188px] max-h-[60px] rounded-lg cursor-pointer flex justify-center items-center"
                 onClick={addColumn}
               >
                 Adăugați coloana

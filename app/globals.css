@@ -36,3 +36,17 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance:textfield; /* Firefox */
 }
+
+@media print {
+    .header {
+        display: none;
+    }
+    .game-block {
+        page-break-inside: avoid;
+        page-break-after: auto;
+        border:none;
+    }
+    .control-buttons {
+        display: none;
+    }
+}

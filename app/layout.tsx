@@ -6,6 +6,7 @@ import { ToastProvider } from "@/components/providers/toastify";
 import "./globals.css";
 import { ReactQueryClientProvider } from "@/components/providers/react-query";
 import { Header } from "@/components/header";
+import Head from "next/head";
 
 const comicNeue = Comic_Neue({
   variable: "--font-comic-neue",
@@ -23,9 +24,9 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ro">
       <body
-        className={`${comicNeue.className} bg-[#ECEEF0] h-screen flex flex-col`}
+        className={`${comicNeue.className} bg-[#fcf6e4] h-screen flex flex-col`}
       >
         <ReactQueryClientProvider>
           <ToastProvider>

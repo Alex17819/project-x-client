@@ -27,7 +27,7 @@ export const Modal = ({
   onClose: VoidFunction;
   onClick?: (img: string) => void;
 }) => {
-  useLockBodyScroll(isOpen);
+  // useLockBodyScroll(isOpen);
 
   if (!isOpen) return null;
 

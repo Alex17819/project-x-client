@@ -6,6 +6,8 @@ import { UserRoles } from "@/types/user";
 import { useAuth } from "@/hooks";
 import { useQuery } from "@tanstack/react-query";
 
+import { Comic_Neue, Ranchers } from "next/font/google";
+
 const menu = [
   {
     title: "Proiecte",
@@ -13,11 +15,17 @@ const menu = [
     isAuth: true,
     roles: UserRoles.TEACHER,
   },
-  {
-    title: "Înregistrare",
-    link: "/register",
-  },
+  // {
+  //   title: "Înregistrare",
+  //   link: "/register",
+  // },
 ];
+
+const ranchers = Ranchers({
+  variable: "--font-ranchers",
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export const Header = () => {
   const isAuthenticated = useAuth();
@@ -33,10 +41,17 @@ export const Header = () => {
   });
 
   return (
-    <header className="bg-[#3E53A0] text-white py-5">
+    <header className="header text-white py-15 relative">
+      <img
+        src="/assets/images/header-bg-4.jpg"
+        alt="header bg"
+        className="size-full absolute top-0 left-0 object-cover z-[-1]"
+      />
       <div className="max-w-[1440px] mx-auto flex items-center justify-between w-full px-[5%]">
         <Link href="/dashboard">
-          <h1 className="text-[20px] font-bold hover:text-[#CCD4DE] transition-colors">
+          <h1
+            className={`${ranchers.className} text-5xl text-sky-800 hover:underline transition-colors`}
+          >
             MiniEdu
           </h1>
         </Link>
@@ -45,23 +60,11 @@ export const Header = () => {
             {menu.map((item, index) => {
               if (item.isAuth && !user?.data) return;
 
-              if (item.link === "/register" && user?.data) {
-                return (
-                  <Link
-                    key={index}
-                    className="hover:text-[#CCD4DE] transition-colors cursor-pointer"
-                    href="/account"
-                  >
-                    Cont personal
-                  </Link>
-                );
-              }
-
               if (item.isAuth && user?.data) {
                 return (
                   <li
                     key={index}
-                    className="hover:text-[#CCD4DE] transition-colors"
+                    className="text-2xl text-black hover:underline transition-colors"
                   >
                     <Link href={item.link}>{item.title}</Link>
                   </li>
@@ -71,12 +74,20 @@ export const Header = () => {
               return (
                 <li
                   key={index}
-                  className="hover:text-[#CCD4DE] transition-colors"
+                  className="text-2xl text-black hover:underline transition-colors"
                 >
                   <Link href={item.link}>{item.title}</Link>
                 </li>
               );
             })}
+            {user?.data && (
+              <Link
+                className="text-2xl text-black hover:underline transition-colors cursor-pointer"
+                href="/account"
+              >
+                Cont personal
+              </Link>
+            )}
           </ul>
         </div>
       </div>

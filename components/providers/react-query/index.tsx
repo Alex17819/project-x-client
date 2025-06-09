@@ -15,7 +15,7 @@ export const ReactQueryClientProvider = ({ children }: ToastProviderProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/*<ReactQueryDevtools initialIsOpen={false} />*/}
     </QueryClientProvider>
   );
 };

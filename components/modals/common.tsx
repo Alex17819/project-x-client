@@ -9,7 +9,7 @@ export const Overlay = ({
 }) => {
   return (
     <div
-      className="bg-black/50 absolute top-0 left-0 inset-0 size-full p-[10%] z-100"
+      className="bg-black/50 fixed top-0 left-0 inset-0 size-full p-[10%] z-100"
       onClick={onClose}
     >
       <div

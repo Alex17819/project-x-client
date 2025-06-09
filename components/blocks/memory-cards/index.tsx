@@ -105,10 +105,17 @@ export const MemoryCards = ({
   };
 
   return (
-    <div className="border-4 border-amber-600 flex flex-col items-center gap-y-5 py-4">
+    <div
+      className={clsx(
+        "game-block border-4 border-[#2b7fff] flex flex-col items-center gap-y-2 py-4",
+        {
+          "border-none": isPdfGenerating,
+        }
+      )}
+    >
       {state.map((row, rowIndex) => {
         return (
-          <ul key={rowIndex} className="flex gap-2 scale-130">
+          <ul key={rowIndex} className="flex gap-2 text-8xl">
             {row.map((item, itemIndex) => {
               const isMatched = item.isMatched;
 
@@ -120,13 +127,19 @@ export const MemoryCards = ({
               const showCard =
                 isVisible && roles?.includes(UserRoles.TEACHER) && isEditable;
 
+              const isOpen = isPdfGenerating || showCard || isSelected;
+
+              const isEven = item.value % 2 === 0;
+              const isOdd = item.value % 2 !== 0;
+
               return (
                 <li
                   key={itemIndex}
                   className={clsx(
-                    "size-10 flex justify-center items-center border cursor-pointer bg-black transition-colors duration-500 select-none",
+                    "size-20 flex justify-center items-center border cursor-pointer bg-[#009966] transition-colors text-white duration-500 select-none tabular-nums",
                     {
-                      "bg-white": isPdfGenerating || showCard || isSelected,
+                      "bg-[#fb2c36]": isOpen && isEven,
+                      "bg-[#3E53A0]!": isOpen && isOdd,
                     }
                   )}
                   onClick={
@@ -135,7 +148,15 @@ export const MemoryCards = ({
                       : () => handleChange(rowIndex, itemIndex)
                   }
                 >
-                  {isPdfGenerating || showCard || isSelected ? item.value : ""}
+                  <span
+                    className={clsx({
+                      "-translate-y-[40px]": isPdfGenerating,
+                    })}
+                  >
+                    {isPdfGenerating || showCard || isSelected
+                      ? item.value
+                      : ""}
+                  </span>
                 </li>
               );
             })}

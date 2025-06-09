@@ -35,6 +35,7 @@ interface Props {
   };
   isEditable?: boolean;
   roles?: UserRoles[];
+  isPdfGenerating?: boolean;
 }
 
 export const MatchQuantity = ({
@@ -42,6 +43,7 @@ export const MatchQuantity = ({
   data,
   isEditable = false,
   roles,
+  isPdfGenerating = false,
 }: Props) => {
   const [state, setState] = useState<State>({
     images: [null],
@@ -246,7 +248,15 @@ export const MatchQuantity = ({
   }, [editableIndex]);
 
   return (
-    <div ref={containerRef} className="border-4 border-amber-600 relative flex justify-center gap-x-[250px] py-4">
+    <div
+      ref={containerRef}
+      className={clsx(
+        "game-block border-4 border-[#2b7fff] relative flex justify-center gap-x-[250px] py-4",
+        {
+          "border-none": isPdfGenerating,
+        }
+      )}
+    >
       <svg className="absolute size-full top-0 left-0 pointer-events-none">
         {lines.map((line, index) => (
           <line
@@ -266,14 +276,14 @@ export const MatchQuantity = ({
             return (
               <li
                 key={index}
-                className="bg-black/30 size-20 rounded-full cursor-pointer flex justify-center
+                className="bg-[#0000003A] size-40 rounded-full cursor-pointer flex justify-center
                 items-center relative group"
                 onClick={() => {
                   if (!isEditable) return;
                   openGalleryModal(index);
                 }}
               >
-                <Image
+                <img
                   className="size-full rounded-full"
                   src="/assets/images/image-placeholder.jpg"
                   width={80}
@@ -302,14 +312,14 @@ export const MatchQuantity = ({
               }}
               key={index}
               className={clsx(
-                "cursor-pointer size-20 rounded-full border border-2 group relative",
+                "cursor-pointer size-40 rounded-full border border-2 group relative",
                 {
-                  "border-blue-500": selected.image === image,
+                  "border-[#2b7fff]": selected.image === image,
                 }
               )}
               onClick={() => handleSelect("image", image)}
             >
-              <Image
+              <img
                 className="size-full rounded-full object-cover"
                 src={image}
                 width={80}
@@ -335,7 +345,7 @@ export const MatchQuantity = ({
                     openGalleryModal(index);
                   }}
                 >
-                  <Image
+                  <img
                     src="/assets/icons/gear.svg"
                     alt="gear icon"
                     width={16}
@@ -351,10 +361,12 @@ export const MatchQuantity = ({
         isEditable &&
         state.images.length < 5 ? (
           <li
-            className="bg-black/30 size-20 rounded-full cursor-pointer text-[40px] text-white flex justify-center items-center"
+            className="bg-[#0000003A] size-40 rounded-full cursor-pointer text-white"
             onClick={addRow}
           >
-            +
+            <div className="text-9xl size-full flex justify-center items-center translate-x-[1px] translate-y-[-10px]">
+              +
+            </div>
           </li>
         ) : null}
       </ul>
@@ -367,9 +379,9 @@ export const MatchQuantity = ({
               }}
               key={index}
               className={clsx(
-                "cursor-pointer size-20 rounded-full border-2 flex justify-center items-center group relative",
+                "cursor-pointer size-40 rounded-full border-2 flex justify-center items-center group relative",
                 {
-                  "border-blue-500": selected.number === number.id,
+                  "border-[#2b7fff]": selected.number === number.id,
                 }
               )}
               onClick={() => handleSelect("number", number.id)}
@@ -384,7 +396,7 @@ export const MatchQuantity = ({
                     }}
                     type="number"
                     className={clsx(
-                      "size-full outline-none text-center text-3xl",
+                      "size-full outline-none text-center text-7xl",
                       {
                         hidden: editableIndex !== index,
                       }
@@ -400,7 +412,7 @@ export const MatchQuantity = ({
                     }}
                   />
                   {editableIndex !== index ? (
-                    <span className="text-3xl">{number.value}</span>
+                    <span className="text-7xl">{number.value}</span>
                   ) : null}
                   <span
                     className="absolute top-0 -right-[20px] text-black opacity-0 transition-all group-hover:opacity-100"
@@ -418,7 +430,7 @@ export const MatchQuantity = ({
                       setEditableIndex(index);
                     }}
                   >
-                    <Image
+                    <img
                       src="/assets/icons/gear.svg"
                       alt="gear icon"
                       width={16}
@@ -428,7 +440,15 @@ export const MatchQuantity = ({
                   </span>
                 </>
               ) : (
-                <span className="text-3xl">{number.value}</span>
+                <div className="text-7xl size-full flex justify-center items-center tabular-nums">
+                  <span
+                    className={clsx({
+                      "-translate-y-[30px]": isPdfGenerating,
+                    })}
+                  >
+                    {number.value}
+                  </span>
+                </div>
               )}
             </li>
           );
@@ -437,10 +457,12 @@ export const MatchQuantity = ({
         isEditable &&
         state.numbers.length < 5 ? (
           <li
-            className="bg-black/30 size-20 rounded-full cursor-pointer text-[40px] text-white flex justify-center items-center"
+            className="bg-[#0000003A] size-40 rounded-full cursor-pointer text-white"
             onClick={addRow}
           >
-            +
+            <div className="text-9xl size-full flex justify-center items-center translate-x-[1px] translate-y-[-10px]">
+              +
+            </div>
           </li>
         ) : null}
       </ul>

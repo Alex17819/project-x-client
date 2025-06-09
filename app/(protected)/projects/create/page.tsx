@@ -114,10 +114,10 @@ export default function CreateProjectPage() {
   };
 
   return (
-    <div className="mt-2 space-y-2">
-      {!games.length ? <h2>Adăugați primul bloc</h2> : null}
-      <div className="flex justify-between">
-        <div className="space-x-1">
+    <div>
+      {!games.length ? <h2 className="mt-2">Adăugați primul bloc</h2> : null}
+      <div className="control-buttons flex justify-between sticky top-0 bg-[#fcf6e4] z-[1] py-2">
+        <div className="flex gap-x-2">
           {gameNames.map(({ type, title }) => (
             <Button key={type} onClick={() => addGame(type)}>
               {title}

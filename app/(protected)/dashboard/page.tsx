@@ -52,28 +52,28 @@ export default function DashboardPage() {
           pe primul
         </h2>
       ) : (
-        <div className="flex justify-between">
-          <div>
-            <h2>Proiectele tale</h2>
-            <div className="mt-2 flex gap-x-2">
-              {user?.data.ProjectUser.map(({ projectId }) => (
-                <Link
-                  href={`/projects/view/${projectId}`}
-                  key={projectId}
-                  className="border border-gray-400 p-2"
-                >
-                  {projectId}
-                </Link>
-              ))}
-            </div>
-          </div>
+        <>
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl">Proiectele tale</h2>
 
-          {user?.data.roles.includes(UserRoles.TEACHER) ? (
-            <Button className="h-10">
-              <Link href="/projects/create">Creare proiect nou</Link>
-            </Button>
-          ) : null}
-        </div>
+            {user?.data.roles.includes(UserRoles.TEACHER) ? (
+              <Button className="h-10">
+                <Link href="/projects/create">Creare proiect nou</Link>
+              </Button>
+            ) : null}
+          </div>
+          <div className="mt-2 flex gap-2 flex-wrap">
+            {user?.data.ProjectUser.map(({ projectId }) => (
+              <Link
+                href={`/projects/view/${projectId}`}
+                key={projectId}
+                className="border border-gray-400 p-8 hover:border-gray-900 transition-colors"
+              >
+                {projectId}
+              </Link>
+            ))}
+          </div>
+        </>
       )}
     </>
   );

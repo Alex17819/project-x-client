@@ -6,6 +6,7 @@ import { Modal } from "@/components/modals/modal";
 import { HexColorPicker } from "react-colorful";
 import { toast } from "react-toastify";
 import { UserRoles } from "@/types/user";
+import { clsx } from "clsx";
 
 interface Line {
   x1: number;
@@ -33,6 +34,7 @@ interface Props {
   };
   isEditable?: boolean;
   roles?: UserRoles[];
+  isPdfGenerating?: boolean;
 }
 
 export const MatchColors = ({
@@ -40,6 +42,7 @@ export const MatchColors = ({
   data,
   isEditable = false,
   roles,
+  isPdfGenerating = false,
 }: Props) => {
   const [columns, setColumns] = useState<Columns>({
     colors: [null],
@@ -164,8 +167,8 @@ export const MatchColors = ({
 
     const rect = element.getBoundingClientRect();
     setColorPickerCoordinates({
-      x: rect.left + 30 + window.pageXOffset,
-      y: element.offsetTop,
+      x: rect.left + window.pageXOffset,
+      y: element.offsetTop + 60,
     });
     setIsColorPickerOpen(true);
   };
@@ -275,7 +278,15 @@ export const MatchColors = ({
   }, []);
 
   return (
-    <div ref={containerRef} className="border-4 border-amber-600 flex justify-center gap-x-[250px] relative py-4">
+    <div
+      ref={containerRef}
+      className={clsx(
+        "game-block border-4 border-[#2b7fff] flex justify-center gap-x-[250px] relative py-4",
+        {
+          "border-none": isPdfGenerating,
+        }
+      )}
+    >
       <svg className="absolute size-full top-0 left-0 pointer-events-none">
         {lines.map((line, index) => (
           <line
@@ -300,7 +311,7 @@ export const MatchColors = ({
                     colorPickerLiRef.current[index] = el;
                   }
                 }}
-                className="cursor-pointer size-20 rounded-full bg-black/10 relative group"
+                className="cursor-pointer size-40 rounded-full bg-[#0000001A] relative group"
                 onClick={() => {
                   if (!isEditable) return;
                   chooseColor(index);
@@ -326,7 +337,7 @@ export const MatchColors = ({
 
           return (
             <li
-              className="cursor-pointer size-20 rounded-full relative group flex justify-center items-center"
+              className="cursor-pointer size-40 rounded-full relative group flex justify-center items-center"
               ref={(ref) => {
                 if (ref) {
                   colorRefs.current[color] = ref;
@@ -376,10 +387,12 @@ export const MatchColors = ({
         isEditable &&
         columns.colors.length < 5 ? (
           <li
-            className="cursor-pointer size-20 rounded-full bg-black/30 text-[40px] text-white flex justify-center items-center"
+            className="bg-[#0000003A] size-40 rounded-full cursor-pointer text-white"
             onClick={addRow}
           >
-            +
+            <div className="text-9xl size-full flex justify-center items-center translate-x-[1px] translate-y-[-10px]">
+              +
+            </div>
           </li>
         ) : null}
       </ul>
@@ -389,7 +402,7 @@ export const MatchColors = ({
             return (
               <li
                 key={index}
-                className="cursor-pointer size-20 rounded-full bg-black/10 relative group"
+                className="cursor-pointer size-40 rounded-full bg-[#0000001A] relative group"
                 onClick={() => {
                   if (!isEditable) return;
                   chooseImage(index);
@@ -418,7 +431,7 @@ export const MatchColors = ({
 
           return (
             <li
-              className="cursor-pointer size-20 rounded-full relative group"
+              className="cursor-pointer size-40 rounded-full relative group"
               key={index}
               ref={(ref) => {
                 if (ref) {
@@ -426,7 +439,7 @@ export const MatchColors = ({
                 }
               }}
             >
-              <Image
+              <img
                 src={image}
                 alt=""
                 width="80"
@@ -459,7 +472,7 @@ export const MatchColors = ({
                     chooseImage(index);
                   }}
                 >
-                  <Image
+                  <img
                     src="/assets/icons/gear.svg"
                     alt="gear icon"
                     width={16}
@@ -475,10 +488,12 @@ export const MatchColors = ({
         isEditable &&
         columns.images.length < 5 ? (
           <li
-            className="cursor-pointer size-20 rounded-full bg-black/30 text-[40px] text-white flex justify-center items-center"
+            className="bg-[#0000003A] size-40 rounded-full cursor-pointer text-white"
             onClick={addRow}
           >
-            +
+            <div className="text-9xl size-full flex justify-center items-center translate-x-[1px] translate-y-[-10px]">
+              +
+            </div>
           </li>
         ) : null}
       </ul>

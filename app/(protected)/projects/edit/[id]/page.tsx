@@ -136,20 +136,22 @@ export default function EditProjectPage() {
       <div className="loader" />
     </div>
   ) : (
-    <div className="space-y-2">
-      <div className="sticky space-y-2 z-20 bg-[#ECEEF0] top-0 py-2 border-b border-b-black">
-        <Button>
+    <div className="flex flex-col gap-y-2">
+      <div className="control-buttons sticky flex flex-col gap-y-2 z-20 bg-[#fcf6e4] top-0 py-2 border-b border-b-black">
+        <Button className="max-w-max">
           <Link href={`/projects/view/${id}`}>Vizualizare</Link>
         </Button>
         <div className="flex justify-between">
-          <div className="space-x-1">
+          <div className="flex gap-2 flex-wrap ">
             {gameNames.map(({ type, title }) => (
               <Button key={type} onClick={() => addGame(type)}>
                 {title}
               </Button>
             ))}
           </div>
-          <Button onClick={saveProject}>Salvează</Button>
+          <Button onClick={saveProject} className="max-h-max">
+            Salvează
+          </Button>
         </div>
       </div>
       {parsedData.map(({ type, data, id }, index) => {

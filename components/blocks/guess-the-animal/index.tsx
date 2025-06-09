@@ -21,6 +21,7 @@ interface Props {
   };
   isEditable?: boolean;
   roles?: UserRoles[];
+  isPdfGenerating?: boolean;
 }
 
 export const GuessTheAnimal = ({
@@ -28,6 +29,7 @@ export const GuessTheAnimal = ({
   data,
   isEditable = false,
   roles,
+  isPdfGenerating = false,
 }: Props) => {
   const [answer, setAnswer] = useState("");
   const [finalAnswer, setFinalAnswer] = useState<string[]>([]);
@@ -65,15 +67,20 @@ export const GuessTheAnimal = ({
   };
 
   return (
-    <div className="border-4 border-amber-600 flex justify-center items-center flex-col py-4">
+    <div
+      className={clsx(
+        "game-block border-4 border-[#2b7fff] flex justify-center items-center flex-col py-4",
+        {
+          "border-none": isPdfGenerating,
+        }
+      )}
+    >
       <div className="relative">
         {img ? (
-          <Image
+          <img
             src={img}
             alt={img}
-            width={700}
-            height={700}
-            className={clsx({
+            className={clsx("size-[700px]", {
               "cursor-pointer":
                 isEditable && roles?.includes(UserRoles.TEACHER),
             })}
@@ -83,7 +90,7 @@ export const GuessTheAnimal = ({
             }}
           />
         ) : (
-          <Image
+          <img
             src="/assets/images/image-placeholder.jpg"
             alt={img}
             width={700}

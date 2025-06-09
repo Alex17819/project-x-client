@@ -115,14 +115,14 @@ export default function ViewProjectPage() {
     } catch (error) {}
   };
 
-  const generatePdf = () => {
+  const generatePdf = async () => {
     setIsPdfGenerating(true);
     const element = pageRef.current;
     const options = {
       filename: "games-for-kids.pdf",
-      image: { type: "jpeg", quality: 0.85 },
+      image: { type: "jpeg", quality: 0.95 },
       html2canvas: {
-        scale: 1.5,
+        scale: 2,
         useCORS: true,
         logging: true,
       },
@@ -134,7 +134,11 @@ export default function ViewProjectPage() {
       .set(options)
       .from(element)
       .save()
-      .then(() => setIsPdfGenerating(false));
+      .then(() => setIsPdfGenerating(false))
+      .catch((error) => {
+        console.error("PDF generation error:", error);
+        setIsPdfGenerating(false);
+      });
   };
 
   return isLoading || isUserLoading ? (
@@ -144,14 +148,14 @@ export default function ViewProjectPage() {
   ) : (
     <div className="mt-2 space-y-2">
       {isPdfGenerating ? (
-        <div className="fixed top-0 left-0 w-full h-full bg-black/50 z-20">
+        <div className="fixed top-0 left-0 w-full h-full bg-white/50 z-20">
           <div className="size-full flex justify-center items-center">
             <div className="loader" />
           </div>
         </div>
       ) : null}
       {userData?.data.roles.includes(UserRoles.TEACHER) ? (
-        <div className="flex bg-[#ECEEF0] z-10 sticky top-0 py-2 border-b border-b-black justify-between items-center">
+        <div className="control-buttons flex bg-[#fcf6e4] z-10 sticky top-0 py-2 border-b border-b-black justify-between items-center">
           <Button>
             <Link href={`/projects/edit/${id}`}>Editare</Link>
           </Button>
@@ -162,7 +166,7 @@ export default function ViewProjectPage() {
         </div>
       ) : null}
       {!userData?.data.roles.includes(UserRoles.TEACHER) ? (
-        <div className="flex gap-x-2 text-right">
+        <div className="control-buttons flex gap-x-2 text-right">
           <Button onClick={generatePdf}>Generare PDF</Button>
           <Button onClick={saveProject}>Salvează</Button>
         </div>
@@ -177,6 +181,7 @@ export default function ViewProjectPage() {
                   data={data}
                   roles={roles}
                   onDataChange={(data) => handleDataChange(index, data)}
+                  isPdfGenerating={isPdfGenerating}
                 />
               );
             }
@@ -187,6 +192,7 @@ export default function ViewProjectPage() {
                   data={data}
                   roles={roles}
                   onDataChange={(data) => handleDataChange(index, data)}
+                  isPdfGenerating={isPdfGenerating}
                 />
               );
             }
@@ -197,6 +203,7 @@ export default function ViewProjectPage() {
                   data={data}
                   roles={roles}
                   onDataChange={(data) => handleDataChange(index, data)}
+                  isPdfGenerating={isPdfGenerating}
                 />
               );
             }
@@ -218,6 +225,7 @@ export default function ViewProjectPage() {
                   data={data}
                   roles={roles}
                   onDataChange={(data) => handleDataChange(index, data)}
+                  isPdfGenerating={isPdfGenerating}
                 />
               );
             }
