@@ -246,7 +246,7 @@ export const MatchQuantity = ({
   }, [editableIndex]);
 
   return (
-    <div ref={containerRef} className="relative flex gap-x-[250px]">
+    <div ref={containerRef} className="border-4 border-amber-600 relative flex justify-center gap-x-[250px] py-4">
       <svg className="absolute size-full top-0 left-0 pointer-events-none">
         {lines.map((line, index) => (
           <line

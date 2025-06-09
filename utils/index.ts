@@ -1,7 +1,7 @@
 // Algorithm Fisher-Yates (Durstenfeld shuffle)
 export const generateMatrix = (rows: number, cols: number) => {
   if ((rows * cols) % 2 !== 0) {
-    throw new Error("Количество ячеек должно быть чётным!");
+    throw new Error("Numarul de matrice trebuie sa fie par!");
   }
 
   const pairsCount = (rows * cols) / 2;
